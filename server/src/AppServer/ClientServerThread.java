@@ -27,25 +27,25 @@ public class ClientServerThread extends Thread{
 		String parsedMsg[];
 		AppSystem system; 
 		
-		//while true¸¦ »ìÂ¦ ¹Ù²ã¾ßÇÔ. ³ªÁß¿¡
-		while(true){
+		int debug;
+		debug = 1;
+		
+		try {
+			clientRequest = mDataInputStream.readLine();
+			parsedMsg = MessageParser.parsingMsg(clientRequest);
+			
 			try {
-				clientRequest = mDataInputStream.readLine();
-				parsedMsg = MessageParser.parsingMsg(clientRequest);
-				
-				try {
-					system = AppSystem.getInstance(parsedMsg,mDataInputStream,mDataOutputStream);
+				system = AppSystem.getInstance(parsedMsg,mDataInputStream,mDataOutputStream);
+				if(system != null)
 					system.excuteSystem();
-				} catch (SQLException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-
-			} catch (IOException e) {
+			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-				break;
 			}
+
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
 		}
 	}
 }

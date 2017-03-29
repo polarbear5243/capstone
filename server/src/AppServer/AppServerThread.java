@@ -35,12 +35,15 @@ public class AppServerThread extends Thread{
 		Socket tmpSocket = null;
 		ClientServerThread tmpClientServerThread = null;
 		while(true){
-			try {
+			try {	
 				tmpSocket = mServerSocket.accept();
 				tmpClientServerThread = new ClientServerThread(tmpSocket);
 				
 				mClient.add(tmpClientServerThread);
 				tmpClientServerThread.start();
+				
+				System.out.println("Á¢¼Ó!");
+
 			} catch (IOException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();

@@ -17,8 +17,8 @@ public class LoginDB {
 		mStatement = connection.createStatement();
 		mConnection = connection;
 	}
-	public boolean isExistUserID(String id, String pw) throws SQLException{
-		mResult = mStatement.executeQuery("SELECT count(*) FROM userinfo WHERE userid ='" + id + "';");	
+	public boolean compareIDandPW(String id, String pw) throws SQLException{
+		mResult = mStatement.executeQuery("SELECT count(*) FROM userinfo WHERE userid ='" + id + "' And password ='" + pw + "';");	
 		mResult.next();
 		
 		if (mResult.getInt(1) > 0)
@@ -27,8 +27,7 @@ public class LoginDB {
 			return false;
 	}
 	public boolean isExistUserDeviceid(String id, String devId) throws SQLException{
-		mResult = mStatement.executeQuery("SELECT count(*) FROM device "
-				+ "WHERE userid ='" + id + "' AND deviceid ='"+ devId + "';");	
+		mResult = mStatement.executeQuery("SELECT count(*) FROM device " + "WHERE userid ='" + id + "' AND deviceid ='"+ devId + "';");	
 		mResult.next();
 		
 		if (mResult.getInt(1) > 0)
@@ -37,8 +36,7 @@ public class LoginDB {
 			return false;
 	}
 	public boolean isExistUserID(String id) throws SQLException{
-		mResult = mStatement.executeQuery("SELECT count(*) FROM device "
-				+ "WHERE userid ='" + id + "';");	
+		mResult = mStatement.executeQuery("SELECT count(*) FROM userinfo " + "WHERE userid ='" + id + "';");	
 		mResult.next();
 		
 		if (mResult.getInt(1) > 0)
@@ -57,9 +55,9 @@ public class LoginDB {
 		if(isExistUserDeviceid(id, devId) == true)
 			return;
 		
-		manipulate = mConnection.prepareStatement("INSERT INTO userinfo(userid,password) VALUES(?,?)");
+		manipulate = mConnection.prepareStatement("INSERT INTO device(userid,deviceid) VALUES(?,?)");
 		manipulate.setString(1,id);
 		manipulate.setString(2,devId);
-		manipulate.executeUpdate();		
+		manipulate.executeUpdate();
 	}
 }

@@ -38,13 +38,14 @@ public class LoginSystem extends AppSystem{
 		String sendStr;
 		byte[] sendData;
 		
-		if(mLoginDB.isExistUserID(mMsg[2], mMsg[3]) == true){
+		if(mLoginDB.compareIDandPW(mMsg[2], mMsg[3]) == true){
 			try{
 				mLoginDB.registerDevice(mMsg[2], mMsg[4]);
 			} catch(SQLException e){
 				// 이거 처리해야함.
 				e.printStackTrace();
 			}
+			System.out.println("로그인 성공");
 			result.add("Success");
 		}
 		else{
@@ -55,8 +56,10 @@ public class LoginSystem extends AppSystem{
 			}
 			else {
 				// 아이디가 없음.
-				result.add("UnExistID");								
+				result.add("UnExistID");
 			}
+
+			System.out.println("로그인 실패");
 		}
 
 		sendStr = MessageParser.wrapMsg(result);
@@ -78,7 +81,7 @@ public class LoginSystem extends AppSystem{
 		String sendStr;
 		byte[] sendData;
 		
-		if(mLoginDB.isExistUserID(mMsg[2], mMsg[3]) == true){
+		if(mLoginDB.compareIDandPW(mMsg[2], mMsg[3]) == true){
 			if(mLoginDB.isExistUserDeviceid(mMsg[2], mMsg[4]) == true){
 				result.add("Success");				
 			}
@@ -118,6 +121,7 @@ public class LoginSystem extends AppSystem{
 		else {
 			mLoginDB.registerUser(mMsg[2], mMsg[3]);
 			result.add("Success");
+			System.out.println("사용자 추가 완료");
 		}
 		
 		sendStr = MessageParser.wrapMsg(result);

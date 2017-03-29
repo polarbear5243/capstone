@@ -11,6 +11,9 @@ public class Server {
 		// TODO Auto-generated method stub
 		try {
 			GroceryDB.initDB();
+			
+			System.out.println("DB OPEN");
+			
 			mAppServer = new AppServerThread();
 			mAppServer.start();
 		} catch (IOException e) {
