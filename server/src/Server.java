@@ -8,6 +8,7 @@ public class Server {
 	static AppServerThread mAppServer;
 	
 	public static void main(String[] args) {
+		
 		// TODO Auto-generated method stub
 		try {
 			GroceryDB.initDB();
@@ -20,6 +21,8 @@ public class Server {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
+		
+		
 	}
 
 }
