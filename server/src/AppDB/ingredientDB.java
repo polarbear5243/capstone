@@ -36,14 +36,14 @@ public class ingredientDB {
 	
 	public ArrayList<Ingredient> getUserIngredientList(String userid) throws SQLException{
 		ArrayList<Ingredient> result = new ArrayList<Ingredient>();
-		mResult = mStatement.executeQuery("SELECT * FROM ingredient WHERE userid = '" + userid + "';");
+		mResult = mStatement.executeQuery("SELECT * FROM myingredient WHERE userid = '" + userid + "';");
 		while(mResult.next()){
 			Ingredient data = new Ingredient(
 					Integer.toString(mResult.getInt("ingredientid")),
-					(char)mResult.getByte("amount"),
+					mResult.getString("amount"),
 					mResult.getDate("buydate"),
 					mResult.getString("productname"),
-					(char)mResult.getByte("favorite")
+					mResult.getString("favorite")
 					);
 			result.add(data);
 		}
@@ -56,10 +56,10 @@ public class ingredientDB {
 				+ "VALUES(?,?,?,?,?,?)");
 		manipulate.setString(1,userid);
 		manipulate.setInt(2, Integer.parseInt(data.getIngredientID()));
-		manipulate.setByte(3, (byte)data.getAmount() );
+		manipulate.setString(3, data.getAmount() );
 		manipulate.setDate(4, data.getBuyDate());
 		manipulate.setString(5, data.getProductName());
-		manipulate.setByte(6, (byte)data.getFavorite());
+		manipulate.setString(6, data.getFavorite());
 		
 		manipulate.executeUpdate();		
 	} 
@@ -77,10 +77,10 @@ public class ingredientDB {
 	public void changeUserIngredientInfo(String userid, String productName, Ingredient data) throws SQLException{
 		mStatement.executeUpdate("UPDATE myingredient "
 				+ "SET amount = '"+ data.getAmount() 
-				+ "', buydate = '" + data.getBuyDate()
+				+ "', buydate = '" + data.getBuyDate().toString()
 				+ "', productName = '" + data.getProductName()
 				+ "', favorite = '" + data.getFavorite()
-				+ "WHERE userid = '" + userid + "' AND productname = '" + productName + "';");
+				+ "' WHERE userid = '" + userid + "' AND productname = '" + productName + "';");
 	}
 	
 	public ArrayList<String> searchByIngredientName(String productName) throws SQLException{
@@ -91,12 +91,12 @@ public class ingredientDB {
 		if (target != "" && choseong == ""){
 			//초성으로 검색하는 경우
 			mResult = mStatement.executeQuery("SELECT ingredientid FROM realproduct "
-					+ "WHERE choseongSearch(productname) LIKE concat('%'," + productName + ",'%');");
+					+ "WHERE choseongSearch(productname) LIKE '%" + productName + "%';");
 			while(mResult.next()){
 				result.add(Integer.toString(mResult.getInt(1)));
 			}
 			mResult = mStatement.executeQuery("SELECT ingredientid FROM ingredient "
-					+ "WHERE choseongSearch(bornname) LIKE concat('%'," + productName + ",'%');");
+					+ "WHERE choseongSearch(bornname) LIKE '%" + productName + "%';");	
 			while(mResult.next()){
 				result.add(Integer.toString(mResult.getInt(1)));
 			}
@@ -104,12 +104,12 @@ public class ingredientDB {
 		else {
 			//일반 검색
 			mResult = mStatement.executeQuery("SELECT ingredientid FROM realproduct "
-					+ "WHERE productname LIKE concat('%'," + productName + ",'%');");
+					+ "WHERE productname LIKE '%" + productName + "%';");
 			while(mResult.next()){
 				result.add(Integer.toString(mResult.getInt(1)));
 			}
 			mResult = mStatement.executeQuery("SELECT ingredientid FROM ingredient "
-					+ "WHERE bornname LIKE concat('%'," + productName + ",'%');");
+					+ "WHERE bornname LIKE '%" + productName + "%';");
 			while(mResult.next()){
 				result.add(Integer.toString(mResult.getInt(1)));
 			}

@@ -24,4 +24,8 @@ public class GroceryDB {
 	static public LoginDB getLoginDB() throws SQLException{
 		return new LoginDB(mConnect);
 	}
+	
+	static public ingredientDB getIngredientDB() throws SQLException{
+		return new ingredientDB(mConnect);
+	}
 }

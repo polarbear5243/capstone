@@ -4,21 +4,21 @@ import java.sql.Date;
 
 public class Ingredient {
 	private String ingredientID;
-	private char amount;
+	private String amount;
 	private Date buydate;
 	private String productName;
-	private char favorite;
+	private String favorite;
 	
 	public Ingredient(){
 		ingredientID = null;
-		amount = 'L';
+		amount = "L";
 		java.util.Date utilDate = new java.util.Date();
 		buydate = new Date(utilDate.getTime());
 		productName = null;
-		favorite = 'N';
+		favorite = "N";
 	}
 	
-	public Ingredient(String ingredientID, char amount, Date buydate, String productName,char favorite){
+	public Ingredient(String ingredientID, String amount, Date buydate, String productName,String favorite){
 		this.ingredientID = ingredientID;
 		this.amount = amount;
 		this.buydate = buydate;
@@ -34,11 +34,11 @@ public class Ingredient {
 		return ingredientID;
 	}
 	
-	public void setAmount(char amount){
+	public void setAmount(String amount){
 		this.amount = amount;
 	}
 	
-	public char getAmount(){
+	public String getAmount(){
 		return this.amount;
 	}
 	
@@ -58,11 +58,11 @@ public class Ingredient {
 		return this.productName;
 	}
 
-	public void setFavorite(char favorite){
+	public void setFavorite(String favorite){
 		this.favorite = favorite;
 	}
 	
-	public char getFavorite(){
+	public String getFavorite(){
 		return this.favorite;
 	}
 
