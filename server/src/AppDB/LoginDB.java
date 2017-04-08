@@ -45,7 +45,7 @@ public class LoginDB {
 			return false;
 	}
 	public void registerUser(String id, String pw) throws SQLException{
-		manipulate = mConnection.prepareStatement("INSERT INTO userinfo(userid,password) VALUES(?,?)");
+		manipulate = mConnection.prepareStatement("INSERT INTO userinfo(userid,password) VALUES(?,?);");
 		manipulate.setString(1,id);
 		manipulate.setString(2,pw);
 		manipulate.executeUpdate();				
@@ -55,9 +55,9 @@ public class LoginDB {
 		if(isExistUserDeviceid(id, devId) == true)
 			return;
 		
-		manipulate = mConnection.prepareStatement("INSERT INTO device(userid,deviceid) VALUES(?,?)");
-		manipulate.setString(1,id);
-		manipulate.setString(2,devId);
+		manipulate = mConnection.prepareStatement("INSERT INTO device(deviceid,userid) VALUES(?,?);");
+		manipulate.setString(1,devId);
+		manipulate.setString(2,id);
 		manipulate.executeUpdate();
 	}
 }

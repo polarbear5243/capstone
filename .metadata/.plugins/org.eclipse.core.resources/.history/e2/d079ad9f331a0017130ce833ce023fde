@@ -1,0 +1,9 @@
+package AppServer.Netwok;
+
+import java.io.DataInputStream;
+
+public class ReadString {
+	static public String readString(DataInputStream dis){
+		
+	}
+}

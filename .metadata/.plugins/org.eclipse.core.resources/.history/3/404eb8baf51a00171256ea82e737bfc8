@@ -1,0 +1,18 @@
+package AppServer.Netwok;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+
+public class ReadString {
+	static public String readString(DataInputStream dis) throws IOException{
+//		String result = dis.readLine();
+
+		byte[] input = new byte[4092];
+		dis.read(input);
+		
+		String result = new String(input,"UTF-8");
+//		result = new String(result.getBytes("UTF-8"),"MS949");
+		
+		return result;
+	}
+}

@@ -1,0 +1,12 @@
+package AppServer.Netwok;
+
+import java.io.DataOutputStream;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+
+public class SendString {
+	public static void sendData(String str, DataOutputStream dos) throws IOException{
+		byte[] byteData = str.getBytes("8859_1");
+		dos.write(byteData, 0, byteData.length);
+	}
+}

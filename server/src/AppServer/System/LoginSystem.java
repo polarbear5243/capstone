@@ -9,6 +9,7 @@ import java.util.ArrayList;
 import AppDB.GroceryDB;
 import AppDB.LoginDB;
 import AppServer.MessageParser;
+import AppServer.Netwok.SendString;
 
 public class LoginSystem extends AppSystem{
 
@@ -36,7 +37,6 @@ public class LoginSystem extends AppSystem{
 	protected void manualLogin() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
-		byte[] sendData;
 		
 		if(mLoginDB.compareIDandPW(mMsg[2], mMsg[3]) == true){
 			try{
@@ -63,8 +63,7 @@ public class LoginSystem extends AppSystem{
 		}
 
 		sendStr = MessageParser.wrapMsg(result);
-		sendData = sendStr.getBytes();
-		mDOS.write(sendData,0,sendData.length);
+		SendString.sendString(sendStr, mDOS);
 	}
 	/*-------------------------------------------------------------------
 	 * Auto - MSG FORMAT
@@ -79,7 +78,6 @@ public class LoginSystem extends AppSystem{
 	protected void autoLogin() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
-		byte[] sendData;
 		
 		if(mLoginDB.compareIDandPW(mMsg[2], mMsg[3]) == true){
 			if(mLoginDB.isExistUserDeviceid(mMsg[2], mMsg[4]) == true){
@@ -96,8 +94,7 @@ public class LoginSystem extends AppSystem{
 		}
 		
 		sendStr = MessageParser.wrapMsg(result);
-		sendData = sendStr.getBytes();
-		mDOS.write(sendData,0,sendData.length);
+		SendString.sendString(sendStr, mDOS);
 	}
 	/*-------------------------------------------------------------------
 	 * Register - MSG FORMAT
@@ -111,7 +108,6 @@ public class LoginSystem extends AppSystem{
 	protected void register() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
-		byte[] sendData;
 		
 		if(mLoginDB.isExistUserID(mMsg[2]) == true){
 			//이미 이쓴 ID
@@ -125,8 +121,7 @@ public class LoginSystem extends AppSystem{
 		}
 		
 		sendStr = MessageParser.wrapMsg(result);
-		sendData = sendStr.getBytes();
-		mDOS.write(sendData,0,sendData.length);		
+		SendString.sendString(sendStr, mDOS);
 	}
 	//-------------------------------public_method-------------------------------------------
 	public LoginSystem(String[] msg, DataInputStream dis, DataOutputStream dos) throws SQLException{

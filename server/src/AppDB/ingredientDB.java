@@ -20,9 +20,10 @@ public class ingredientDB {
 	
 	public ArrayList<String> getAllIngredientIDList() throws SQLException{
 		ArrayList<String> result = new ArrayList<String>();
-		mResult = mStatement.executeQuery("SELECT ingredientid From ingredient;");
+		mResult = mStatement.executeQuery("SELECT ingredientid, bornname From ingredient;");
 		while(mResult.next()){
-			result.add(Integer.toString(mResult.getInt(1)));
+			result.add(Integer.toString(mResult.getInt("ingredientid")));
+			result.add(mResult.getString("bornname"));
 		}
 		
 		return result;

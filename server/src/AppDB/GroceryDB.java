@@ -7,8 +7,8 @@ import java.sql.SQLException;
 public class GroceryDB {
 	private final static String dbURL = "jdbc:mysql://127.0.0.1:3306/grocerydb";
 	private final static String user = "root";
-//	private final static String password = "a!353535";
-	private final static String password = "gns930714!";
+	private final static String password = "a!353535";
+//	private final static String password = "gns930714!";
 	
 	private static Connection mConnect = null;
 	

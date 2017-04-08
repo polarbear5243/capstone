@@ -1,0 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<session version="1.0">
+<refactoring comment="Rename type &apos;AppServer.Netwok.ReadData&apos; to &apos;ReadString&apos;&#x0D;&#x0A;- Original project: &apos;server&apos;&#x0D;&#x0A;- Original element: &apos;AppServer.Netwok.ReadData&apos;&#x0D;&#x0A;- Renamed element: &apos;AppServer.Netwok.ReadString&apos;&#x0D;&#x0A;- Update references to refactored element&#x0D;&#x0A;- Update textual occurrences in comments and strings" description="Rename type &apos;ReadData&apos;" flags="589830" id="org.eclipse.jdt.ui.rename.type" input="/src&lt;AppServer.Netwok{ReadData.java[ReadData" matchStrategy="1" name="ReadString" qualified="false" references="true" similarDeclarations="false" stamp="1491419188673" textual="false" version="1.0"/>
+</session>

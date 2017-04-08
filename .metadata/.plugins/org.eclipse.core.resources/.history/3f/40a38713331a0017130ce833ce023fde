@@ -1,0 +1,5 @@
+package AppServer.Netwok;
+
+public class SendString {
+
+}

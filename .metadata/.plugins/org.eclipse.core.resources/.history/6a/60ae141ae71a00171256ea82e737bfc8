@@ -1,0 +1,13 @@
+package AppServer.Netwok;
+
+import java.io.DataInputStream;
+import java.io.IOException;
+
+public class ReadString {
+	static public String readString(DataInputStream dis) throws IOException{
+		String result = dis.readLine();
+		result = new String(result.getBytes(),"EUC-KR");
+		
+		return result;
+	}
+}

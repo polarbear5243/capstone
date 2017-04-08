@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.net.Socket;
 import java.sql.SQLException;
 
+import AppServer.Netwok.ReadString;
 import AppServer.System.AppSystem;
 
 public class ClientServerThread extends Thread{
@@ -31,7 +32,7 @@ public class ClientServerThread extends Thread{
 		debug = 1;
 		
 		try {
-			clientRequest = mDataInputStream.readLine();
+			clientRequest = ReadString.readString(mDataInputStream);
 			parsedMsg = MessageParser.parsingMsg(clientRequest);
 			
 			try {

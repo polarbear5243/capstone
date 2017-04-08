@@ -1,0 +1,62 @@
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.sql.Date;
+import java.sql.SQLException;
+import java.util.ArrayList;
+
+import AppDB.GroceryDB;
+import AppDB.Ingredient;
+import AppDB.ingredientDB;
+import AppServer.AppServerThread;
+
+public class Server {
+	
+	static AppServerThread mAppServer;
+	
+	public static void main(String[] args) {
+		
+		byte [] ba = null;
+		String a = null;
+		String ss = null;
+		
+		String test = "»ç°ú";
+		try {
+			ba = test.getBytes("UTF-8");
+			a = new String(ba,"UTF-8");
+			ss = new String(ba);
+
+		
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		
+		try {
+			byte[] bb = ss.getBytes("MS949");
+		} catch (UnsupportedEncodingException e2) {
+			// TODO Auto-generated catch block
+			e2.printStackTrace();
+		}
+		try {
+			a = new String(ss.getBytes("MS949"),"UTF-8");
+		} catch (UnsupportedEncodingException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		// TODO Auto-generated method stub
+		try {
+			GroceryDB.initDB();
+			
+			System.out.println("DB OPEN");
+			
+			mAppServer = new AppServerThread();
+			mAppServer.start();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		
+	}
+
+}
