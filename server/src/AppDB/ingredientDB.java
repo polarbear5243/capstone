@@ -62,12 +62,32 @@ public class ingredientDB {
 		manipulate.setString(5, data.getProductName());
 		manipulate.setString(6, data.getFavorite());
 		
-		manipulate.executeUpdate();		
+		manipulate.executeUpdate();
+		
+		manipulate = mConnection.prepareStatement("INSERT INTO userlog(userid,ingredientid,type) "
+				+ "VALUES(?,?,?)");
+		manipulate.setString(1,userid);
+		manipulate.setInt(2,Integer.parseInt(data.getIngredientID()));
+		manipulate.setString(3,"A");
+		
+		manipulate.executeUpdate();
 	} 
 	
 	
 	public void deleteUserIngredient(String userid, String productName) throws SQLException{
 		mStatement.executeUpdate("DELETE FROM myingredient WHERE userid = '" + userid + "' AND productname = '"+ productName +"';");
+		
+		mResult = mStatement.executeQuery("SELECT ingredientid FROM ingredient where = '"+ productName +"';");
+		mResult.next();
+		
+		manipulate = mConnection.prepareStatement("INSERT INTO userlog(userid,ingredientid,type) "
+				+ "VALUES(?,?,?)");
+		manipulate.setString(1,userid);
+		manipulate.setInt(2,mResult.getInt(1));
+		manipulate.setString(3,"D");
+		
+		manipulate.executeUpdate();
+		
 	}	
 	
 	public void deleteAllUserIngredient(String userid) throws SQLException{
