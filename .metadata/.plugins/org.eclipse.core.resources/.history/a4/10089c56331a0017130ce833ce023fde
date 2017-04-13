@@ -1,9 +1,0 @@
-package AppServer.Netwok;
-
-import java.io.DataOutputStream;
-
-public class SendString {
-	public static void sendData(String str, DataOutputStream dos){
-		
-	}
-}
