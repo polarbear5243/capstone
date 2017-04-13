@@ -123,6 +123,7 @@ public class IngredientSystem extends AppSystem{
 		}catch(SQLException e){
 			result.add("Fail");
 			result.add("UnExistID");
+			e.printStackTrace();
 		}
 		String sendStr;
 		sendStr = MessageParser.wrapMsg(result);
@@ -148,6 +149,7 @@ public class IngredientSystem extends AppSystem{
 			result.add("Success");
 		}catch(SQLException e){
 			result.add("Fail");
+			e.printStackTrace();
 		}
 		String sendStr;
 		sendStr = MessageParser.wrapMsg(result);

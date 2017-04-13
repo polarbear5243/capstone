@@ -16,7 +16,8 @@ public class IngredientSystem extends AppSystem{
 
 	protected static final String GET_USER_INGREDIENT = "GetMy";
 	protected static final String GET_ALL_INGREDIENT = "GetAll";
-	protected static final String REGISTER = "Register";
+	protected static final String ADD_USER_INGREDIENT = "Add";
+	protected static final String DELETE_USER_INGREDIENT = "Delete";
 	
 	protected String[] mMsg;
 	protected DataInputStream mDIS;
@@ -36,8 +37,10 @@ public class IngredientSystem extends AppSystem{
 			getUserIngredient();
 		else if(mMsg[1].compareTo(IngredientSystem.GET_ALL_INGREDIENT)==0)
 			getAllIngredient();
-/*		else if(mMsg[1].compareTo(LoginSystem.REGISTER)==0)
-			register();*/
+		else if(mMsg[1].compareTo(IngredientSystem.ADD_USER_INGREDIENT)==0)
+			addUserIngredient();
+		else if(mMsg[1].compareTo(IngredientSystem.DELETE_USER_INGREDIENT)==0)
+			deleteUserIngredient();
 		else 
 			;
 	}
@@ -102,27 +105,55 @@ public class IngredientSystem extends AppSystem{
 	 * NoId - "Fail"///"UnExistID"
 	 * 
 	 ------------------------------------------------------------------*/
-	protected void addUserIngredient(String userid, String ingredientId, String ingredientName) throws SQLException, IOException{
+	protected void addUserIngredient() throws SQLException, IOException{
+		java.util.Date today = new java.util.Date();
+		java.sql.Date date = new java.sql.Date(today.getTime());
+
 		Ingredient ingredient = new Ingredient();
-		ingredient.setIngredientID(ingredientId);
+		ingredient.setIngredientID(mMsg[3]);
 		ingredient.setAmount("L");
-		ingredient.setBuyDate(buydate);
+		ingredient.setBuyDate(date);
 		ingredient.setFavorite("N");
-		ingredient.setProductName(ingredientName);
-		
-		ArrayList<String> userIngredient = mIngrediendtDB.getAllIngredientIDList();
+		ingredient.setProductName(mMsg[4]);
+
 		ArrayList<String> result = new ArrayList<String>();
+		try{
+			mIngrediendtDB.insertUserIngredient(mMsg[2], ingredient);
+			result.add("Success");
+		}catch(SQLException e){
+			result.add("Fail");
+			result.add("UnExistID");
+			e.printStackTrace();
+		}
 		String sendStr;
-		
-		result.add("Start");
-		for(int i=0;i<userIngredient.size();i++)
-			result.add(userIngredient.get(i));		
-		result.add("End");
-		
 		sendStr = MessageParser.wrapMsg(result);
 	
 		SendString.sendString(sendStr, mDOS);		
-		System.out.println("모든 식재료 전달");
+		System.out.println("식재료 추가");
 	}
+	/*-------------------------------------------------------------------
+	 * deleteUserIngredient - MSG FORMAT
+	 * "Ingredient"///"Delete"///userId///ingredientName
+	 * 
+	 * Result - FORMAT
+	 * Success:
+	 * "Success"
+	 * Fail:
+	 * NoId - "Fail"
+	 * 
+	 ------------------------------------------------------------------*/
+	protected void deleteUserIngredient() throws SQLException, IOException{
+		ArrayList<String> result = new ArrayList<String>();
+		try{
+			mIngrediendtDB.deleteUserIngredient(mMsg[2], mMsg[3]);
+			result.add("Success");
+		}catch(SQLException e){
+			result.add("Fail");
+		}
+		String sendStr;
+		sendStr = MessageParser.wrapMsg(result);
 	
+		SendString.sendString(sendStr, mDOS);		
+		System.out.println("식재료 삭제");
+	}
 }
