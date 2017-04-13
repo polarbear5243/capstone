@@ -28,4 +28,8 @@ public class GroceryDB {
 	static public ingredientDB getIngredientDB() throws SQLException{
 		return new ingredientDB(mConnect);
 	}
+	
+	static public RecipeDB getRecipeDB() throws SQLException{
+		return new RecipeDB(mConnect);
+	}
 }

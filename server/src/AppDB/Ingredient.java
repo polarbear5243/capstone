@@ -8,6 +8,7 @@ public class Ingredient {
 	private Date buydate;
 	private String productName;
 	private String favorite;
+	private String typename;
 	
 	public Ingredient(){
 		ingredientID = null;
@@ -16,6 +17,7 @@ public class Ingredient {
 		buydate = new Date(utilDate.getTime());
 		productName = null;
 		favorite = "N";
+		typename = "";
 	}
 	
 	public Ingredient(String ingredientID, String amount, Date buydate, String productName,String favorite){
@@ -24,6 +26,15 @@ public class Ingredient {
 		this.buydate = buydate;
 		this.productName = productName;
 		this.favorite = favorite;
+		this.typename = "";
+	}
+	
+	public Ingredient(String ingredientID, String ingredientName, String amount, String typename){
+		this.ingredientID = ingredientID;
+		this.productName = ingredientName;
+		this.amount = amount;
+		this.typename = typename;
+		this.favorite = "";
 	}
 	
 	public void setIngredientID(String id){
@@ -33,6 +44,15 @@ public class Ingredient {
 	public String getIngredientID(){
 		return ingredientID;
 	}
+
+	public void setTypeName(String typename){
+		this.typename = typename;
+	}
+	
+	public String getTypeName(){
+		return this.typename;
+	}
+
 	
 	public void setAmount(String amount){
 		this.amount = amount;

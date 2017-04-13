@@ -77,11 +77,9 @@ public class ingredientDB {
 	public void deleteUserIngredient(String userid, String productName) throws SQLException{
 		mStatement.executeUpdate("DELETE FROM myingredient WHERE userid = '" + userid + "' AND productname = '"+ productName +"';");
 		
-<<<<<<< HEAD
 		mResult = mStatement.executeQuery("SELECT ingredientid FROM ingredient where bornname = '"+ productName +"';");
-=======
 		mResult = mStatement.executeQuery("SELECT ingredientid FROM ingredient where ingredient.bornname = '"+ productName +"';");
->>>>>>> 9c66741aca1119b9adceb9939bd8aa2a7f0929b8
+
 		mResult.next();
 		
 		manipulate = mConnection.prepareStatement("INSERT INTO userlog(userid,ingredientid,type) "

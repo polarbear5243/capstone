@@ -7,8 +7,6 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 
 import AppDB.GroceryDB;
-import AppDB.Ingredient;
-import AppDB.ingredientDB;
 import AppServer.AppServerThread;
 
 public class Server {
@@ -19,17 +17,19 @@ public class Server {
 		
 		// TODO Auto-generated method stub
 		try {
+			
 			GroceryDB.initDB();
 			
 			System.out.println("DB OPEN");
 			
 			mAppServer = new AppServerThread();
 			mAppServer.start();
+			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 		
 	}
 
