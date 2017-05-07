@@ -24,7 +24,15 @@ public class RecipeDB {
 		calories,
 		amount,
 		level,
-		price
+		price,
+		salty,
+		sweet,
+		seun,
+		sin,
+		hot,
+		grosy,
+		protein,
+		mainflavor
 	}
 	
 	public RecipeDB(Connection connection) throws SQLException{
@@ -182,5 +190,62 @@ public class RecipeDB {
 		
 		manipulate.executeUpdate();
 	}
+	
+	
+	/* int getRecipeFlavorAmountByID(String id, recipeKeyword keyword)
+	 * 레시피 ID와 얻고 싶은 맛 정보를 인풋으로 받아 해당 정보를 리턴한다. 결과가 없으면 -1을 리턴한다.
+	 * 
+	 * */
+	public int getRecipeFlavorAmountByID(String id, recipeKeyword keyword) throws SQLException{
+		String column = "";
+		switch(keyword){
+		case salty:
+			column = "salty";
+			break;
+		case sweet:
+			column = "sweet";
+			break;
+		case seun:
+			column = "seun";
+			break;
+		case sin:
+			column = "sin";
+			break;
+		case hot:
+			column = "hot";
+			break;
+		case grosy:
+			column = "grosy";
+			break;
+		case protein:
+			column = "protein";
+			break;
+		}
+		
+		mResult = mStatement.executeQuery("SELECT "+column+" FROM recipe "
+				+ "WHERE " + "idrecipe" + " = '" + id + "';");
+		
+		if (mResult.next()){
+			return mResult.getInt(column);
+		}
+		return -1;
+	}
+	
+	/* String getRecipeMainFlavorByID(String id)
+	 * 레시피 ID를 인풋으로 받아 해당 레시피의 대표맛을 리턴한다.
+	 * 대표맛은 스트링이며 다음과 같다.
+	 *  ex) sweet/salty/grosy
+	 *  ex) sweet
+	 * */
+	public String getRecipeMainFlavorByID(String id) throws SQLException{
+		mResult = mStatement.executeQuery("SELECT mainflavor FROM recipe "
+				+ "WHERE " + "idrecipe" + " = '" + id + "';");
+		if (mResult.next()){
+			return mResult.getString("mainflavor");
+		}
+		return "";
+		
+	}
+	
 	
 }
