@@ -98,12 +98,15 @@ public class RecipeDB {
 			break;
 		}
 		
-		if (keyword != recipeKeyword.time)
-		mResult = mStatement.executeQuery("SELECT idrecipe,recipename FROM recipe "
-				+ "WHERE " + column + " = '" + value + "';");
+		if (keyword == recipeKeyword.time)
+			mResult = mStatement.executeQuery("SELECT idrecipe,recipename FROM recipe "
+					+ "WHERE " + column + " = " + value + ";");
+		else if (keyword == recipeKeyword.recipename)
+			mResult = mStatement.executeQuery("SELECT idrecipe,recipename FROM recipe "
+					+ "WHERE " + column + " like '%" + value + "%';");
 		else
-		mResult = mStatement.executeQuery("SELECT idrecipe,recipename FROM recipe "
-				+ "WHERE " + column + " = " + value + ";");
+			mResult = mStatement.executeQuery("SELECT idrecipe,recipename FROM recipe "
+					+ "WHERE " + column + " = '" + value + "';");
 		
 		while(mResult.next()){
 			
