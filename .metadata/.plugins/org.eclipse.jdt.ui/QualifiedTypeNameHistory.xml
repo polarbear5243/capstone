@@ -18,9 +18,9 @@
 <fullyQualifiedTypeName name="java.lang.Byte"/>
 <fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="AppDB.RecipeDB"/>
-<fullyQualifiedTypeName name="AppDB.RecipeDB.recipeKeyword"/>
 <fullyQualifiedTypeName name="AppServer.System.AppSystem"/>
 <fullyQualifiedTypeName name="AppDB.Recipe"/>
-<fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="AppServer.System.RecipeSystem"/>
+<fullyQualifiedTypeName name="java.lang.Integer"/>
+<fullyQualifiedTypeName name="AppDB.RecipeDB.recipeKeyword"/>
 </qualifiedTypeNameHistroy>

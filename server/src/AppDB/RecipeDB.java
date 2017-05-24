@@ -189,8 +189,33 @@ public class RecipeDB {
 		manipulate.setString(3,Evaluate);
 		
 		manipulate.executeUpdate();
+		
+		boolean[] mainFlavor = getRecipeMainFlavorByID(recipeid);
+		String FLAVOR[] = {"salty","sweet","seun","sin","hot","grosy","protein"};
+		recipeKeyword [] keyword = {recipeKeyword.salty, recipeKeyword.sweet, recipeKeyword.seun,
+									recipeKeyword.hot, recipeKeyword.grosy, recipeKeyword.protein};
+		
+		int count;
+		for(int i=0;i<7;i++){
+			if(mainFlavor[i] == true){
+				String target = FLAVOR[i];
+				target = target + getRank(getRecipeFlavorAmountByID(recipeid,keyword[i]));
+				
+				//토탈 추가
+				mResult = mStatement.executeQuery("SELECT " + target + " FROM userinfo "
+						+ "WHERE " + "userid" + " = '" + userid + "';");
+				count = mResult.getInt(target);
+				count++;
+				// 카운트 업데이트
+				//좋아하면 추가
+			}
+		}
 	}
 	
+	public String getRank(int score){
+		String rank = (score / 20 + 1) + "";
+		return rank;
+	}
 	
 	/* int getRecipeFlavorAmountByID(String id, recipeKeyword keyword)
 	 * 레시피 ID와 얻고 싶은 맛 정보를 인풋으로 받아 해당 정보를 리턴한다. 결과가 없으면 -1을 리턴한다.
@@ -236,16 +261,37 @@ public class RecipeDB {
 	 * 대표맛은 스트링이며 다음과 같다.
 	 *  ex) sweet/salty/grosy
 	 *  ex) sweet
+	 *  
+	 *  대표맛은 DB에 숫자로 저장됨
+	 *  1~7 : salty/sweet/seun/sin/hot/grosy/protein
+	 *  EX) 1/2/7
+	 *  
+	 *  return 으로는 boolean배열이 리턴됨.
+	 *  true면 그게 주된맛.
+	 *  
+	 *  1100001 --> 1/2/7 --> salty/sweet/protein
+	 *  
 	 * */
-	public String getRecipeMainFlavorByID(String id) throws SQLException{
+	public boolean[] getRecipeMainFlavorByID(String id) throws SQLException{
+		String result;
+		String[] splitResult;
+		boolean [] mainFlavor = new boolean[7];
+		
+		for(int i=0;i<7;i++)
+			mainFlavor[i]=false;
+		
 		mResult = mStatement.executeQuery("SELECT mainflavor FROM recipe "
 				+ "WHERE " + "idrecipe" + " = '" + id + "';");
 		if (mResult.next()){
-			return mResult.getString("mainflavor");
+			result = mResult.getString("mainflavor");
 		}
-		return "";
+		result = "";
 		
-	}
-	
-	
+		splitResult = result.split("/");
+		for(int i=0;i<splitResult.length;i++){
+			mainFlavor[Integer.parseInt(splitResult[i]) - 1] = true;
+		}
+		
+		return mainFlavor;
+	}	
 }
