@@ -175,6 +175,8 @@ public class RecipeDB {
 		 
 		return new Recipe("-1","결과없음");
 	}
+
+	
 	
 	/* void insertUserEvaluation(String userid, String recipeid, String Evaluate)
 	 * 어떤 유저가 어떤 레시피에 대해 평가한 것을 DB에 기록한다.
