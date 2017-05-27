@@ -10,19 +10,24 @@ public class Graph {
 	ArrayList<Node> nodeList;
 	
 	public Graph(RecipeDB recipe_DB,ingredientDB ingredient_DB) throws SQLException{
+		RecipeContents = recipe_DB;
+		IngredientContents = ingredient_DB;
+		nodeList = new ArrayList<Node>();
+		
 		recipe_DB.mResult = recipe_DB.mStatement.executeQuery(
 				"SELECT idrecipe, countryName, categoryName, salty, sweet, seun, sin, hot, grosy, protein"
 				+ " FROM recipe");
 		
-		//recipe_DB.mResult.beforeFirst();
-		int i = 1;
-		for (int j = 1 ; j <= recipe_DB.mResult.getFetchSize() ; i++){
+		recipe_DB.mResult.last();
+		int rowNum = recipe_DB.mResult.getRow();
+		
+		for (int j = 1 ; j <= rowNum ; j++){
 			recipe_DB.mResult.absolute(j);
 			// 노드 본인의 특성을 받아옴.
 			ingredient_DB.mResult = ingredient_DB.mStatement.executeQuery(
 					"SELECT recipeingredient.idingredient, ingredient.categorycode"
 					+ " FROM recipeingredient, ingredient"
-					+ " WHERE recipeingredeint.idrecipe = "+ recipe_DB.mResult.getInt(1) 
+					+ " WHERE recipeingredient.idrecipe = "+ recipe_DB.mResult.getInt(1) 
 					+ " AND (ingredient.categorycode = 'A1' OR ingredient.categorycode = 'B1' OR ingredient.categorycode = 'B2');"); 
 			
 			int myRecipeId = recipe_DB.mResult.getInt(1);
@@ -35,6 +40,8 @@ public class Graph {
 			int myHot = recipe_DB.mResult.getInt(8);
 			int myGrosy = recipe_DB.mResult.getInt(9);
 			int myProtein = recipe_DB.mResult.getInt(10);
+			
+			System.out.println("현재 작업 중인 레시피 노드: "+ myRecipeId);
 			
 			ArrayList<String> myIngredients = new ArrayList<String>();
 			while(ingredient_DB.mResult.next()){
@@ -52,7 +59,7 @@ public class Graph {
 				ingredient_DB.mResult = ingredient_DB.mStatement.executeQuery(
 						"SELECT recipeingredient.idingredient, ingredient.categorycode"
 						+ " FROM recipeingredient, ingredient"
-						+ " WHERE recipeingredeint.idrecipe = "+ recipe_DB.mResult.getInt(1) 
+						+ " WHERE recipeingredient.idrecipe = "+ recipe_DB.mResult.getInt(1) 
 						+ " AND (ingredient.categorycode = 'A1' OR ingredient.categorycode = 'B1' OR ingredient.categorycode = 'B2');"); 
 				
 				int yourRecipeId = recipe_DB.mResult.getInt(1);
@@ -76,6 +83,7 @@ public class Graph {
 					yourCategorys.add(ingredient_DB.mResult.getString(2));
 				}
 				
+				System.out.println("엣지 생성 작업 정상 완료 :" + k + "/" + rowNum);
 				Edge edge = new Edge(myRecipeId,yourRecipeId); //엣지 생성
 				
 				///////////////////////////////// 코스트 계산 /////////////////////////////////////
@@ -122,12 +130,12 @@ public class Graph {
 				myEdges.add(edge);	//계산된 값을 엣지 리스트에 추가
 			}
 			
-			for (int k = j+1 ; k <= recipe_DB.mResult.getFetchSize() ; k++ ){
+			for (int k = j+1 ; k <= rowNum ; k++ ){
 				recipe_DB.mResult.absolute(k);
 				ingredient_DB.mResult = ingredient_DB.mStatement.executeQuery(
 						"SELECT recipeingredient.idingredient, ingredient.categorycode"
 						+ " FROM recipeingredient, ingredient"
-						+ " WHERE recipeingredeint.idrecipe = "+ recipe_DB.mResult.getInt(1) 
+						+ " WHERE recipeingredient.idrecipe = "+ recipe_DB.mResult.getInt(1) 
 						+ " AND (ingredient.categorycode = 'A1' OR ingredient.categorycode = 'B1' OR ingredient.categorycode = 'B2');"); 
 				
 				int yourRecipeId = recipe_DB.mResult.getInt(1);
@@ -152,6 +160,9 @@ public class Graph {
 				}
 				
 				Edge edge = new Edge(myRecipeId,yourRecipeId); //엣지 생성
+				
+				System.out.println("엣지 생성 작업 정상 완료 :" + k + "/" + rowNum);
+				
 				
 				///////////////////////////////// 코스트 계산 /////////////////////////////////////
 				// 맛 계산

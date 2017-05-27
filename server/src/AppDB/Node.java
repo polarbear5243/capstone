@@ -12,6 +12,11 @@ public class Node {
 	public Node(int recipeId, ArrayList<Edge> data){
 		this.recipeId = recipeId;
 		EdgeList = data;
+		/*EdgeList = new ArrayList<Edge>();
+		for (Edge t : data){
+			EdgeList.add(t);
+		}
+		*/
 	}
 	
 	public void calculateProbability(){

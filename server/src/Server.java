@@ -1,5 +1,7 @@
 import java.io.IOException;
+import java.sql.SQLException;
 
+import AppDB.Graph;
 import AppDB.GroceryDB;
 import AppServer.AppServerThread;
 
@@ -18,6 +20,12 @@ public class Server {
 			
 			mAppServer = new AppServerThread();
 			mAppServer.start();
+			try {
+				Graph myGraph = new Graph(GroceryDB.getRecipeDB(),GroceryDB.getIngredientDB());
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
