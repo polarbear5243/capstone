@@ -175,8 +175,6 @@ public class RecipeDB {
 		 
 		return new Recipe("-1","결과없음");
 	}
-
-	
 	
 	/* void insertUserEvaluation(String userid, String recipeid, String Evaluate)
 	 * 어떤 유저가 어떤 레시피에 대해 평가한 것을 DB에 기록한다.
@@ -194,28 +192,45 @@ public class RecipeDB {
 		
 		boolean[] mainFlavor = getRecipeMainFlavorByID(recipeid);
 		String FLAVOR[] = {"salty","sweet","seun","sin","hot","grosy","protein"};
-		recipeKeyword [] keyword = {recipeKeyword.salty, recipeKeyword.sweet, recipeKeyword.seun,
+		recipeKeyword [] keyword = {recipeKeyword.salty, recipeKeyword.sweet, recipeKeyword.seun, recipeKeyword.sin,
 									recipeKeyword.hot, recipeKeyword.grosy, recipeKeyword.protein};
 		
-		int count;
+		int count=0;
 		for(int i=0;i<7;i++){
 			if(mainFlavor[i] == true){
 				String target = FLAVOR[i];
-				target = target + getRank(getRecipeFlavorAmountByID(recipeid,keyword[i]));
-				
+				target = target + getRank(getRecipeFlavorAmountByID(recipeid,keyword[i]));				
 				//토탈 추가
-				mResult = mStatement.executeQuery("SELECT " + target + " FROM userinfo "
+				mResult = mStatement.executeQuery("SELECT " + target + "_copy1" + " FROM userinfo "
 						+ "WHERE " + "userid" + " = '" + userid + "';");
-				count = mResult.getInt(target);
+				String ss = target + "_copy1";
+				if(mResult.next()){
+					count = mResult.getInt(target + "_copy1");
+				}
 				count++;
 				// 카운트 업데이트
+				String qurery = "UPDATE userinfo set " + target + "_copy1" + " = " + count + " WHERE userid = '" + userid + "';";
+				mStatement.executeUpdate(qurery);
+				
 				//좋아하면 추가
+				if(Evaluate.compareTo("10")==0){
+					mResult = mStatement.executeQuery("SELECT " + target + " FROM userinfo "
+							+ "WHERE " + "userid" + " = '" + userid + "';");
+					if(mResult.next()){
+						count = mResult.getInt(target);
+					}
+					count++;
+					// 카운트 업데이트
+					qurery = "UPDATE userinfo set " + target + " = " + count + " WHERE userid = '" + userid + "';";
+					mStatement.executeUpdate(qurery);
+				}
 			}
 		}
 	}
 	
 	public String getRank(int score){
 		String rank = (score / 20 + 1) + "";
+		if(rank.compareTo("6")==0) rank="5";
 		return rank;
 	}
 	
@@ -275,7 +290,7 @@ public class RecipeDB {
 	 *  
 	 * */
 	public boolean[] getRecipeMainFlavorByID(String id) throws SQLException{
-		String result;
+		String result = "";
 		String[] splitResult;
 		boolean [] mainFlavor = new boolean[7];
 		
@@ -287,7 +302,6 @@ public class RecipeDB {
 		if (mResult.next()){
 			result = mResult.getString("mainflavor");
 		}
-		result = "";
 		
 		splitResult = result.split("/");
 		for(int i=0;i<splitResult.length;i++){

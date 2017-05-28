@@ -71,6 +71,74 @@ public class ingredientDB {
 		manipulate.setString(3,"A");
 		
 		manipulate.executeUpdate();
+		
+		//선호도 추가.
+		int count;
+		mResult = mStatement.executeQuery("SELECT * FROM ingredientcount where userid = '" + userid + "' and ingredientid = '" + data.getIngredientID() + "';");
+		if(mResult.next()){
+			//이미 존재
+			count = mResult.getInt("count");
+			count++;
+			String qurery = "UPDATE ingredientcount set count = " + count + " WHERE userid = '" + userid + "' and ingredientid = '" + data.getIngredientID() + "';";
+			mStatement.executeUpdate(qurery);
+		}else{
+			//새로 만들어야함.
+			manipulate = mConnection.prepareStatement(
+					"INSERT INTO ingredientcount(userid,ingredientid,count) "
+					+ "VALUES(?,?,?)");
+			manipulate.setString(1,userid);
+			manipulate.setString(2, data.getIngredientID());
+			manipulate.setInt(3, 1);
+			count = 1;
+			
+			manipulate.executeUpdate();
+		}
+		//좋아하는 것 갱신.
+		String qurery;
+		int score;
+		String tmpStr;
+		int start=6;
+		
+		qurery = "SELECT * FROM userinfo WHERE userid = '" + userid + "';";
+		mResult = mStatement.executeQuery(qurery);
+		if(mResult.next()){
+			for(int i=1;i<=5;i++){
+				String target = "ingredientid" + i;
+				tmpStr = mResult.getString(target);
+				if(tmpStr == null)
+					continue;
+				if(tmpStr.compareTo(data.getIngredientID())==0){
+					start=i;
+					break;
+				}
+			}
+		}
+		for(int i=start-1;i>0;i--){
+			qurery = "SELECT Count FROM ingredientcount where userid = '" + userid + "' and ingredientid = (Select ingredientid" + i + " from userinfo where userid = '" + userid + "');";
+			mResult = mStatement.executeQuery(qurery);
+			if(mResult.next())
+				score = mResult.getInt(1);
+			else
+				score = 0;
+			
+			if(score < count){
+				if(i != 5){
+					qurery = "update userinfo set ingredientid" + (i+1) + " = ingredientid" + i + " where userid = '" + userid + "';";
+					mStatement.executeUpdate(qurery);
+				}
+				if(i == 1){
+					qurery = "update userinfo set ingredientid" + i + " = " + data.getIngredientID() + " where userid = '" + userid + "';";
+					mStatement.executeUpdate(qurery);					
+				}
+			}
+			else{
+				if(i != 5){
+					qurery = "update userinfo set ingredientid" + (i+1) + " = " + data.getIngredientID() + " where userid = '" + userid + "';";
+					mStatement.executeUpdate(qurery);
+				}
+				break;
+			}
+		}
 	} 
 	
 	

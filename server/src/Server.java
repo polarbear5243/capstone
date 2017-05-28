@@ -20,12 +20,12 @@ public class Server {
 			
 			mAppServer = new AppServerThread();
 			mAppServer.start();
-			try {
+	/*		try {
 				Graph myGraph = new Graph(GroceryDB.getRecipeDB(),GroceryDB.getIngredientDB());
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
-			}
+			}*/
 			
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
