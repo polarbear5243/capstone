@@ -168,14 +168,21 @@ public class Graph {
 				edge.setValue(0, result);
 				
 				// 식재료 계산
-				int ingredientsCount = 0;
+				double ingredientsCount = 0.0;
 				for (int t : mydata.ingredients){
 					if(yourdata.ingredients.contains(t)) ingredientsCount++;
 				}
 				
-				int ingredientsCategoryCount = 0;
-				for (String t : mydata.categorys){
-					if(yourdata.categorys.contains(t)) ingredientsCategoryCount++;
+				double ingredientsCategoryCount = 0.0;
+				ArrayList<String> categoryCopy = new ArrayList<String>();
+				for (String t : yourdata.categorys){
+					categoryCopy.add(t);
+				}
+				for (int z = 0 ; z < mydata.categorys.size() ; z++){
+					if (categoryCopy.contains(mydata.categorys.get(z))){
+						ingredientsCategoryCount++;
+						categoryCopy.remove(mydata.categorys.get(z));
+					}
 				}
 				
 				result = ((ingredientsCount/(2*mydata.ingredients.size()))+(ingredientsCategoryCount/(2*mydata.categorys.size())))*100;
@@ -255,14 +262,21 @@ public class Graph {
 				edge.setValue(0, result);
 				
 				// 식재료 계산
-				int ingredientsCount = 0;
+				double ingredientsCount = 0.0;
 				for (int t : mydata.ingredients){
 					if(yourdata.ingredients.contains(t)) ingredientsCount++;
 				}
 				
-				int ingredientsCategoryCount = 0;
-				for (String t : mydata.categorys){
-					if(yourdata.categorys.contains(t)) ingredientsCategoryCount++;
+				double ingredientsCategoryCount = 0.0;
+				ArrayList<String> categoryCopy = new ArrayList<String>();
+				for (String t : yourdata.categorys){
+					categoryCopy.add(t);
+				}
+				for (int z = 0 ; z < mydata.categorys.size() ; z++){
+					if (categoryCopy.contains(mydata.categorys.get(z))){
+						ingredientsCategoryCount++;
+						categoryCopy.remove(mydata.categorys.get(z));
+					}
 				}
 				
 				result = ((ingredientsCount/(2*mydata.ingredients.size()))+(ingredientsCategoryCount/(2*mydata.categorys.size())))*100;
