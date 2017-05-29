@@ -14,9 +14,9 @@ public class Edge {
 		this.to = to;
 	}
 	
-	void setValue(int i,double val){value[i] = val;}
+	public void setValue(int i,double val){value[i] = val;}
 	
-	int getFromRecipe(){return from;}
-	int getToRecipe(){return to;}
-	double getValue(int i){return value[i];}
+	public int getFromRecipe(){return from;}
+	public int getToRecipe(){return to;}
+	public double getValue(int i){return value[i];}
 }

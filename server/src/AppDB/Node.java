@@ -31,6 +31,8 @@ public class Node {
 		return recipeId;
 	}
 	
+	public ArrayList<Edge> getEdgeList(){return EdgeList;}
+	
 	public Edge getEdgeBytoRecipeId(int toRecipeId){
 		for (int i = 0 ; i < EdgeList.size() ; i++){
 			if (EdgeList.get(i).getToRecipe() == toRecipeId) return EdgeList.get(i);

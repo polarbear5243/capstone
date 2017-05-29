@@ -24,7 +24,7 @@ public class Graph {
 	RecipeDB RecipeContents;
 	ingredientDB IngredientContents;
 	
-	ArrayList<Node> nodeList;
+	private static ArrayList<Node> nodeList = null;
 	
 	public Graph(RecipeDB recipe_DB,ingredientDB ingredient_DB) throws SQLException{
 		RecipeContents = recipe_DB;
@@ -310,5 +310,8 @@ public class Graph {
 		
 		
 	} 
+
+	static public ArrayList<Node> getNodeList(){return nodeList;}
+	
 }
 
