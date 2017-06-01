@@ -6,7 +6,7 @@ import AppDB.Edge;
 
 public class Node {
 	private int recipeId;
-	private double probability;
+	//private double probability;
 	private ArrayList<Edge> EdgeList;
 
 	public Node(int recipeId, ArrayList<Edge> data){
@@ -19,14 +19,12 @@ public class Node {
 		*/
 	}
 	
-	public void calculateProbability(){
-		
-	}
 	
+	/*
 	public double getProbability(){
 		return this.probability;
 	}
-	
+	*/
 	public int getRecipeId(){
 		return recipeId;
 	}

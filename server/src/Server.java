@@ -20,6 +20,29 @@ public class Server {
 			
 			mAppServer = new AppServerThread();
 			mAppServer.start();
+			
+			long beforetime = System.currentTimeMillis();
+			Graph myGraph = null;
+			try {
+				myGraph = new Graph(GroceryDB.getRecipeDB(),GroceryDB.getIngredientDB());
+				int[] priority = new int[4];
+				priority[0] = 1;
+				priority[1] = 2;
+				priority[2] = 3;
+				priority[3] = 4;
+				int[] recentRecipes = new int [1];
+				recentRecipes[0] = 1;
+				double[][] result = myGraph.getUserRecomandRecipes("john419", priority, recentRecipes);
+				if(5 == 5){
+					System.out.println(result[0][0]);
+				}
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			
+			long aftertime = System.currentTimeMillis();
+			System.out.println("사용자 추천하는데 걸리는 시간 : " + (aftertime - beforetime) + "ms 걸림");
 			/*
 			long beforetime = System.currentTimeMillis();
 			Graph myGraph = null;
