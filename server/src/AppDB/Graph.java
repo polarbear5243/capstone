@@ -334,6 +334,7 @@ public class Graph {
 	
 	public double[][] getUserRecomandRecipes(String userid, int[] priority, int[] recentRecipes) throws SQLException{
 		if (nodeList == null)return null;
+		if (recentRecipes == null)return null;
 		
 		 double[] mypriority = new double[4];
 		 for (int i = 0 ; i < 4 ; i++){

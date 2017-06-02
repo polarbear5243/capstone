@@ -302,12 +302,12 @@ public class RecipeDB {
 		if (mResult.next()){
 			result = mResult.getString("mainflavor");
 		}
-		
-		splitResult = result.split("/");
-		for(int i=0;i<splitResult.length;i++){
-			mainFlavor[Integer.parseInt(splitResult[i]) - 1] = true;
+		if (result.length() > 0){
+			splitResult = result.split("/");
+			for(int i=0;i<splitResult.length;i++){
+				mainFlavor[Integer.parseInt(splitResult[i]) - 1] = true;
+			}
 		}
-		
 		return mainFlavor;
 	}	
 }

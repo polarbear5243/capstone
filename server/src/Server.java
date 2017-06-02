@@ -3,6 +3,7 @@ import java.sql.SQLException;
 
 import AppDB.Graph;
 import AppDB.GroceryDB;
+import AppDB.Recipe;
 import AppServer.AppServerThread;
 
 public class Server {
@@ -21,7 +22,8 @@ public class Server {
 			mAppServer = new AppServerThread();
 			mAppServer.start();
 			
-			long beforetime = System.currentTimeMillis();
+			long beforetime = 0, aftertime = 0;
+			
 			Graph myGraph = null;
 			try {
 				myGraph = new Graph(GroceryDB.getRecipeDB(),GroceryDB.getIngredientDB());
@@ -32,16 +34,34 @@ public class Server {
 				priority[3] = 4;
 				int[] recentRecipes = new int [1];
 				recentRecipes[0] = 1;
+				beforetime = System.currentTimeMillis();
 				double[][] result = myGraph.getUserRecomandRecipes("john419", priority, recentRecipes);
-				if(5 == 5){
-					System.out.println(result[0][0]);
+				aftertime = System.currentTimeMillis();
+				Recipe data = null;
+				AppDB.Node Nodedata = null;
+				
+				for (int j = 0 ; j < Graph.getNodeList().size(); j++){
+					if (Graph.getNodeList().get(j).getRecipeId() == 1){
+						Nodedata = Graph.getNodeList().get(j);
+						break;
+					}
+				}
+				
+				AppDB.Edge edgedata = null;
+				for (int i = 0 ; i < Graph.getNodeList().size(); i++){
+					data = GroceryDB.getRecipeDB().getRecipeInfoByID(Integer.toString((int)result[0][i]));
+					edgedata = Nodedata.getEdgeBytoRecipeId((int)result[0][i]);
+
+					System.out.println(i+"위 : "+data.getRecipeName() + " // " + result[1][i] + "           " + "맛 : " + edgedata.getValue(0)
+					+ "      재료 : " + edgedata.getValue(1));
+					
 				}
 			} catch (SQLException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 			
-			long aftertime = System.currentTimeMillis();
+			
 			System.out.println("사용자 추천하는데 걸리는 시간 : " + (aftertime - beforetime) + "ms 걸림");
 			/*
 			long beforetime = System.currentTimeMillis();
