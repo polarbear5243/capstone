@@ -19,8 +19,12 @@
 <fullyQualifiedTypeName name="java.lang.Math"/>
 <fullyQualifiedTypeName name="AppDB.RecipeDB"/>
 <fullyQualifiedTypeName name="AppServer.System.AppSystem"/>
-<fullyQualifiedTypeName name="AppDB.Recipe"/>
 <fullyQualifiedTypeName name="AppServer.System.RecipeSystem"/>
 <fullyQualifiedTypeName name="java.lang.Integer"/>
 <fullyQualifiedTypeName name="AppDB.RecipeDB.recipeKeyword"/>
+<fullyQualifiedTypeName name="com.mysql.fabric.Server"/>
+<fullyQualifiedTypeName name="myAppServer.Server"/>
+<fullyQualifiedTypeName name="AppDB.Graph"/>
+<fullyQualifiedTypeName name="com.mysql.jdbc.SequentialBalanceStrategy"/>
+<fullyQualifiedTypeName name="AppDB.Recipe"/>
 </qualifiedTypeNameHistroy>

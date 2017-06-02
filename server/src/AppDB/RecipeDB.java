@@ -310,4 +310,48 @@ public class RecipeDB {
 		}
 		return mainFlavor;
 	}	
+	public int[] getRecentRecipeId(String userid, int num) throws SQLException{
+		int i;
+
+		mResult = mStatement.executeQuery("SELECT * FROM recipeevaluation where userid = '" + userid + "' and Evaluate = 10	order by idrecipeEvaluation desc;");
+		int [] result = new int[num];
+
+		for(i=0;i<num;i++){
+			if(mResult.next())
+				result[i] = mResult.getInt("recipeid");
+			else
+				break;
+		}
+		
+		if( i != num){
+			int [] tmp = new int[i];
+			
+			for(int j=0;j<i;j++)
+				tmp[j]=result[i];
+			return tmp;
+		}
+		
+		return result;
+	}
+	
+	public int getMaxOfRecipeid() throws SQLException{
+		mResult = mStatement.executeQuery("SELECT max(idrecipe) FROM recipe;");
+		mResult.next();
+		return mResult.getInt(1);
+	}
+	
+	public int getMinOfRecipeid() throws SQLException{
+		mResult = mStatement.executeQuery("SELECT min(idrecipe) FROM recipe;");
+		mResult.next();
+		return mResult.getInt(1);
+	}
+	
+	public boolean isCorrectId(int id) throws SQLException{
+		mResult = mStatement.executeQuery("SELECT * FROM recipe where idrecipe = " + id + ";");
+		
+		if(mResult.next())
+			return true;
+		else
+			return false;
+	}
 }

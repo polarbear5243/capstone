@@ -60,4 +60,18 @@ public class LoginDB {
 		manipulate.setString(2,id);
 		manipulate.executeUpdate();
 	}
+	public boolean userIsVisit(String userid) throws SQLException{
+		mResult = mStatement.executeQuery("SELECT * FROM userinfo " + "WHERE userid ='" + userid + "' and init = 0;");	
+		
+		if (mResult.next())
+			return true;
+		else
+			return false;
+	}
+	
+	public void updateVisit(String userid) throws SQLException{
+		String qurery = "UPDATE userinfo set init=1 WHERE userid = '" + userid + "';";
+		mStatement.executeUpdate(qurery);
+
+	}
 }

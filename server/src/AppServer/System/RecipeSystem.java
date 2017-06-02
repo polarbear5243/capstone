@@ -5,7 +5,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Random;
 
+import com.mysql.fabric.Server;
+import com.mysql.jdbc.SequentialBalanceStrategy;
+
+import AppDB.Graph;
 import AppDB.GroceryDB;
 import AppDB.Ingredient;
 import AppDB.LoginDB;
@@ -20,6 +25,8 @@ public class RecipeSystem extends AppSystem {
 	protected static final String SEARCH_RECIPE = "Search";
 	protected static final String GET_RECIPE = "GetInfo";
 	protected static final String EVALUATE_RECIPE = "Evaluate";
+	protected static final String RECOMMEND_RECIPE = "Recommend";
+	protected static final String GET_RAND_RECIPE = "GetRand";
 	
 	protected String[] mMsg;
 	protected DataInputStream mDIS;
@@ -188,6 +195,86 @@ public class RecipeSystem extends AppSystem {
 		
 		System.out.println("평가 완료");
 	}
+	/*-------------------------------------------------------------------
+	 * Recommend - MSG FORMAT
+	 * "Recipe"///"Recommend"///id(string)///1(rank-맛)///2(rank-재료)///3(rank-카테고리)///4(rank-나라)
+	 * 
+	 * Result - FORMAT
+	 * 성공
+	 * "Start"///recipeId///recipeName///"End"
+	 * 
+	 ------------------------------------------------------------------*/	
+	protected void recommend() throws SQLException, IOException{	
+		
+		int recipeNum = 3;
+		
+		ArrayList<String> result = new ArrayList<String>();
+		String sendStr;
+		
+		int [] like = new int[4];
+		String userid = mMsg[2];
+		int [] recentRecipeId;
+		
+		for(int i=0;i<4;i++)
+			like[i] = Integer.parseInt(mMsg[3+i]);
+		recentRecipeId=mRecipeDB.getRecentRecipeId(userid, recipeNum);
+		
+		Graph graph = myAppServer.Server.getGraph();
+		
+		double [][] recipeScore = graph.getUserRecomandRecipes(userid, like, recentRecipeId);
+		
+		//레시피 선택 
+		int [] selectedRecipedId = new int[recipeNum];
+		selectedRecipedId[0] = (int)recipeScore[0][0];
+		selectedRecipedId[1] = (int)recipeScore[0][1];
+		selectedRecipedId[2] = (int)recipeScore[0][2];		
+		
+		//데이터 보내기
+		result.add("Start");
+		for(int i=0;i<recipeNum;i++){
+			int id = selectedRecipedId[i];
+			result.add(id+"");
+			Recipe info= mRecipeDB.getRecipeInfoByID(id+"");
+			result.add(info.getRecipeName());
+		}
+		result.add("End");
+
+		sendStr = MessageParser.wrapMsg(result);
+		SendString.sendString(sendStr, mDOS);
+		
+		System.out.println("평가 완료");
+	}
+	/*-------------------------------------------------------------------
+	 * Recommend - MSG FORMAT
+	 * "Recipe"///"GetRand"
+	 * 
+	 * Result - FORMAT
+	 * 성공
+	 * recipeId
+	 * 
+	 ------------------------------------------------------------------*/	
+	protected void getRandRecipe() throws SQLException, IOException{	
+		ArrayList<String> result = new ArrayList<String>();
+		String sendStr;
+		
+		int min = mRecipeDB.getMinOfRecipeid();
+		int max = mRecipeDB.getMaxOfRecipeid();
+		
+		int num = -1;
+		Random random = new Random();
+		random.setSeed(System.nanoTime());
+		
+		while(mRecipeDB.isCorrectId(num) == false){
+			num = (int)(random.nextDouble() * max) + min;
+		}
+		
+		result.add(num + "");
+		
+		sendStr = MessageParser.wrapMsg(result);
+		SendString.sendString(sendStr, mDOS);
+		
+		System.out.println("평가 완료");
+	}
 	//-------------------------------public_method-------------------------------------------
 	public RecipeSystem(String[] msg, DataInputStream dis, DataOutputStream dos) throws SQLException{
 		mMsg = msg;
@@ -205,6 +292,10 @@ public class RecipeSystem extends AppSystem {
 			getRecipe();
 		else if(mMsg[1].compareTo(RecipeSystem.EVALUATE_RECIPE)==0)
 			evaluate();
+		else if(mMsg[1].compareTo(RecipeSystem.RECOMMEND_RECIPE)==0)
+			recommend();
+		else if(mMsg[1].compareTo(RecipeSystem.GET_RAND_RECIPE)==0)
+			getRandRecipe();
 		else 
 			;
 	}

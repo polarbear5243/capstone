@@ -1,0 +1,43 @@
+package myApp;
+
+import java.io.IOException;
+import java.sql.SQLException;
+
+import AppDB.Graph;
+import AppDB.GroceryDB;
+import AppDB.Recipe;
+import AppServer.AppServerThread;
+
+public class Server {
+	
+	static AppServerThread mAppServer;
+	static Graph myGraph;
+	
+	public static Graph getGraph() { return myGraph; }
+	
+	public static void main(String[] args) {
+		
+		// TODO Auto-generated method stub
+		try {
+			
+			GroceryDB.initDB();
+			
+			System.out.println("DB OPEN");
+			
+			myGraph = new Graph(GroceryDB.getRecipeDB(),GroceryDB.getIngredientDB());
+			
+			mAppServer = new AppServerThread();
+			mAppServer.start();
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+		
+	}
+
+}
