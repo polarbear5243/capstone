@@ -5,25 +5,19 @@ import java.net.ServerSocket;
 import java.net.Socket;
 import java.util.LinkedList;
 
+/*
+ * AppServerThread.java
+ * 서버와 클라이언트의 통신을 할 수 있도록 연결해주는 쓰레드 클래스이다.
+ * 
+ * */
+
 public class AppServerThread extends Thread{
-//-----STATIC
+
 	static final public int PORT_NUM = 26100;
 
-//-----PROTECTED
 	ServerSocket mServerSocket;
 	LinkedList<ClientServerThread> mClient;
 	
-//-----PUBLIC
-
-	
-//-----STATIC
-
-
-//-----PROTECTED
-	
-
-	
-//-----PUBLIC
 	public AppServerThread() throws IOException{
 		mServerSocket = new ServerSocket(AppServerThread.PORT_NUM);
 		mClient = new LinkedList<ClientServerThread>();
@@ -31,7 +25,7 @@ public class AppServerThread extends Thread{
 
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
+		
 		Socket tmpSocket = null;
 		ClientServerThread tmpClientServerThread = null;
 		while(true){
@@ -45,9 +39,9 @@ public class AppServerThread extends Thread{
 				System.out.println("접속!");
 
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
-}
+
+}//end of AppServerThread

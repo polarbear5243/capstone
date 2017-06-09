@@ -5,6 +5,12 @@ import java.io.DataOutputStream;
 import java.io.IOException;
 import java.sql.SQLException;
 
+/*
+ * AppSystem.java
+ * 클라이언트에 특정 서비스를 제공하는 클래스들의 추상 클래스이다.
+ * 
+ * */
+
 public abstract class AppSystem {
 	public static final String LOGIN = "Login";
 	public static final String INGREDIENT = "Ingredient";
@@ -22,6 +28,7 @@ public abstract class AppSystem {
 			return new Survey(msg, dis, dos);
 		return null;
 	}
-	//-------------------------------------------------------------------------------------------
+	
 	abstract public void excuteSystem() throws SQLException, IOException;
-}
+
+}//end of AppSystem

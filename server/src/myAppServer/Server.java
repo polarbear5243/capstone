@@ -6,6 +6,12 @@ import AppDB.Graph;
 import AppDB.GroceryDB;
 import AppServer.AppServerThread;
 
+/*
+ * Server.java
+ * 서버 메인 함수를 가지는 클래스이다.
+ * 
+ * */
+
 public class Server {
 	
 	static AppServerThread mAppServer;
@@ -15,7 +21,6 @@ public class Server {
 	
 	public static void main(String[] args) {
 		
-		// TODO Auto-generated method stub
 		try {
 			
 			GroceryDB.initDB();
@@ -28,14 +33,12 @@ public class Server {
 			mAppServer.start();
 			
 		} catch (SQLException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
 		
 	}
 
-}
+}//end of Server

@@ -9,6 +9,12 @@ import java.sql.SQLException;
 import AppServer.Netwok.ReadString;
 import AppServer.System.AppSystem;
 
+/*
+ * ClientServerThread.java
+ * 소켓 연결이 되면 클라이언트와 서버 사이에서 데이터 교환을 담당하는 클래스이다.
+ * 
+ * */
+
 public class ClientServerThread extends Thread{
 
 	Socket mClientSocket;
@@ -23,13 +29,9 @@ public class ClientServerThread extends Thread{
 	
 	@Override
 	public void run() {
-		// TODO Auto-generated method stub
 		String clientRequest;
 		String parsedMsg[];
 		AppSystem system; 
-		
-		int debug;
-		debug = 1;
 		
 		try {
 			clientRequest = ReadString.readString(mDataInputStream);
@@ -40,13 +42,12 @@ public class ClientServerThread extends Thread{
 				if(system != null)
 					system.excuteSystem();
 			} catch (SQLException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-}
+
+}//end of ClientServerThread

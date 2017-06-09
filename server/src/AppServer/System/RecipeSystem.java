@@ -19,6 +19,12 @@ import AppDB.RecipeDB;
 import AppServer.MessageParser;
 import AppServer.Netwok.SendString;
 
+/*
+ * RecipeSystem.java
+ * AppSystem를 상속받아 클라이언트에 레시피 관련 서비스를 제공하는 클래스이다.
+ * 
+ * */
+
 public class RecipeSystem extends AppSystem {
 
 	protected static final String GETALL_RECIPE = "GetAll";
@@ -34,15 +40,14 @@ public class RecipeSystem extends AppSystem {
 	
 	protected RecipeDB mRecipeDB;
 	
-	//------------------------------protected_method-----------------------------------------
-	/*-------------------------------------------------------------------
-	 * GetAll - MSG FORMAT
+	/* void getAll()
+	 * MSG FORMAT
 	 * "Recipe"///"GetAll"
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * "Start"///recipeId///recipeName///"End"
 	 * 
-	 ------------------------------------------------------------------*/
+	 * */
 	protected void getAll() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<String> tmp = new ArrayList<String>();
@@ -79,14 +84,15 @@ public class RecipeSystem extends AppSystem {
 		
 		System.out.println("레시피 전달");
 	}
-	/*-------------------------------------------------------------------
-	 * Search - MSG FORMAT
+	
+	/* void search()
+	 * MSG FORMAT
 	 * "Recipe"///"Search"///keyword(String)
 	 * 
 	 * Result - FORMAT
 	 * "Start"///recipeId///recipeName///"End"
 	 * 
-	 ------------------------------------------------------------------*/	
+	 * */	
 	protected void search() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		ArrayList<String> tmp;
@@ -110,38 +116,20 @@ public class RecipeSystem extends AppSystem {
 		if(tmp.size() != 0)
 			result.addAll(tmp);
 		
-/*		tmp = mRecipeDB.getRecipesInfoByKeyword(RecipeDB.recipeKeyword.time, mMsg[2]);
-		if(tmp.size() != 0)
-			result.addAll(tmp);
-
-		tmp = mRecipeDB.getRecipesInfoByKeyword(RecipeDB.recipeKeyword.calories, mMsg[2]);
-		if(tmp.size() != 0)
-			result.addAll(tmp);
-
-		tmp = mRecipeDB.getRecipesInfoByKeyword(RecipeDB.recipeKeyword.amount, mMsg[2]);
-		if(tmp.size() != 0)
-			result.addAll(tmp);
-
-		tmp = mRecipeDB.getRecipesInfoByKeyword(RecipeDB.recipeKeyword.level, mMsg[2]);
-		if(tmp.size() != 0)
-			result.addAll(tmp);
-
-		tmp = mRecipeDB.getRecipesInfoByKeyword(RecipeDB.recipeKeyword.price, mMsg[2]);
-		if(tmp.size() != 0)
-			result.addAll(tmp);*/
 		result.add("End");
 		
 		sendStr = MessageParser.wrapMsg(result);
 		SendString.sendString(sendStr, mDOS);
 	}
-	/*-------------------------------------------------------------------
-	 * Register - MSG FORMAT
+	
+	/* void getRecipe()
+	 * MSG FORMAT
 	 * "Recipe"///"GetInfo"///ID(String)
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * id///name///countryName///categoryName///time///calories///level///ingredients///...///"End"///order///...///"End"
 	 * 
-	 ------------------------------------------------------------------*/	
+	 * */	
 	protected void getRecipe() throws SQLException, IOException{	
 		ArrayList<String> result = new ArrayList<String>();
 
@@ -157,8 +145,6 @@ public class RecipeSystem extends AppSystem {
 		result.add(recipe.getLevel());
 		
 		ArrayList<Ingredient> ingredients = recipe.getIngredients();
-		//Ingredient 타입이 조금 이상한??
-		//이건 일반적인 재료가 들어가야되는데 항목을 보면 산날짜, 좋아하냐? 이런게 들어가있음.
 		for(int i=0;i<ingredients.size();i++)
 			result.add(ingredients.get(i).getProductName());
 		result.add("End");
@@ -173,15 +159,16 @@ public class RecipeSystem extends AppSystem {
 		
 		System.out.println("레시피 전달");
 	}
-	/*-------------------------------------------------------------------
-	 * Evaluate - MSG FORMAT
+	
+	/* void evaluate()
+	 * MSG FORMAT
 	 * "Recipe"///"Evaluate"///userId(String)///recipeId(String)///Score(String)
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * 성공
 	 * "Success"
 	 * 
-	 ------------------------------------------------------------------*/	
+	 * */	
 	protected void evaluate() throws SQLException, IOException{	
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
@@ -195,18 +182,20 @@ public class RecipeSystem extends AppSystem {
 		
 		System.out.println("평가 완료");
 	}
-	/*-------------------------------------------------------------------
-	 * Recommend - MSG FORMAT
+	
+	/* void recommend()
+	 * MSG FORMAT
 	 * "Recipe"///"Recommend"///id(string)///1(rank-맛)///2(rank-재료)///3(rank-카테고리)///4(rank-나라)
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * 성공
 	 * "Start"///recipeId///recipeName///"End"
 	 * 
-	 ------------------------------------------------------------------*/	
+	 * */	
 	protected void recommend() throws SQLException, IOException{	
 		
-		int recipeNum = 3;
+		int recipeNum = 10;
+		int getNum = 10;
 		
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
@@ -217,26 +206,77 @@ public class RecipeSystem extends AppSystem {
 		
 		for(int i=0;i<4;i++)
 			like[i] = Integer.parseInt(mMsg[3+i]);
-		recentRecipeId=mRecipeDB.getRecentRecipeId(userid, recipeNum);
+		recentRecipeId=mRecipeDB.getRecentRecipeId(userid, getNum);
+		
+		if(recentRecipeId.length == 0){
+			result.add("Start");
+			for(int i=0;i<recipeNum;i++){
+				
+				int min = mRecipeDB.getMinOfRecipeid();
+				int max = mRecipeDB.getMaxOfRecipeid();
+				
+				int num = -1;
+				Random random = new Random();
+				random.setSeed(System.nanoTime());
+				
+				while(mRecipeDB.isCorrectId(num) == false){
+					num = (int)(random.nextDouble() * max) + min;
+				}			
+				
+				int id = num;
+				result.add(id+"");
+				Recipe info= mRecipeDB.getRecipeInfoByID(id+"");
+				result.add(info.getRecipeName());
+			}
+			result.add("End");
+			
+			sendStr = MessageParser.wrapMsg(result);
+			SendString.sendString(sendStr, mDOS);
+			
+			return;
+		}
 		
 		Graph graph = myAppServer.Server.getGraph();
 		
 		double [][] recipeScore = graph.getUserRecomandRecipes(userid, like, recentRecipeId);
 		
-		//레시피 선택 
+		//레시피 선택
 		int [] selectedRecipedId = new int[recipeNum];
-		selectedRecipedId[0] = (int)recipeScore[0][0];
-		selectedRecipedId[1] = (int)recipeScore[0][1];
-		selectedRecipedId[2] = (int)recipeScore[0][2];		
+		double [] selectedScore = new double[recipeNum];
+		
+		int index=0;
+		double bestscore = recipeScore[1][0];
+		int probability;
+	
+		Random random = new Random();
+		random.setSeed(System.nanoTime());
+		int randInt;
+		
+		for(int i=0;i<recipeNum;i++){
+			while(true){
+				probability = (int)(recipeScore[1][index] / bestscore * 100) - (i * 2);
+				
+				randInt = (int)(random.nextDouble() * 100);
+				
+				if(randInt <= probability){
+					selectedRecipedId[i] = (int)recipeScore[0][index];
+					selectedScore[i] = recipeScore[1][index];
+					index = (index + 1) % recipeScore[0].length;
+					break;
+				}
+				index = (index + 1) % recipeScore[0].length;
+			}
+		}
 		
 		//데이터 보내기
 		result.add("Start");
 		for(int i=0;i<recipeNum;i++){
 			int id = selectedRecipedId[i];
 			result.add(id+"");
-			Recipe info= mRecipeDB.getRecipeInfoByID(id+"");
-			result.add(info.getRecipeName());
+			Recipe info= mRecipeDB.getRecipeInfoByID(id+" ");
+			result.add(info.getRecipeName()+"  "+selectedScore[i]);
 		}
+
 		result.add("End");
 
 		sendStr = MessageParser.wrapMsg(result);
@@ -244,15 +284,16 @@ public class RecipeSystem extends AppSystem {
 		
 		System.out.println("평가 완료");
 	}
-	/*-------------------------------------------------------------------
-	 * Recommend - MSG FORMAT
+	
+	/* void getRandRecipe()
+	 * MSG FORMAT
 	 * "Recipe"///"GetRand"
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * 성공
 	 * recipeId
 	 * 
-	 ------------------------------------------------------------------*/	
+	 * */	
 	protected void getRandRecipe() throws SQLException, IOException{	
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
@@ -275,7 +316,7 @@ public class RecipeSystem extends AppSystem {
 		
 		System.out.println("평가 완료");
 	}
-	//-------------------------------public_method-------------------------------------------
+	
 	public RecipeSystem(String[] msg, DataInputStream dis, DataOutputStream dos) throws SQLException{
 		mMsg = msg;
 		mDIS = dis;
@@ -299,4 +340,5 @@ public class RecipeSystem extends AppSystem {
 		else 
 			;
 	}
-}
+
+}//end of RecipeSystem

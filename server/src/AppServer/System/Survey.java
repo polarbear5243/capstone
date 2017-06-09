@@ -12,6 +12,12 @@ import AppDB.RecipeDB;
 import AppServer.MessageParser;
 import AppServer.Netwok.SendString;
 
+/*
+ * Survey.java
+ * AppSystem를 상속받아 클라이언트에 설문조사 관련 서비스를 제공하는 클래스이다.
+ * 
+ * */
+
 public class Survey extends AppSystem{
 
 	protected static final String FIRST_VISIT = "FirstVisit";
@@ -26,15 +32,14 @@ public class Survey extends AppSystem{
 	
 	protected LoginDB mLoginDB;
 	
-	//------------------------------protected_method-----------------------------------------
-	/*-------------------------------------------------------------------
-	 * GetAll - MSG FORMAT
+	/* void userIsFirstVist()
+	 * MSG FORMAT
 	 * "Survey"///"FirstVisit"///userid
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * "True/False"
 	 * 
-	 ------------------------------------------------------------------*/
+	 * */
 	protected void userIsFirstVist() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		boolean tmp;
@@ -69,4 +74,4 @@ public class Survey extends AppSystem{
 			;
 	}
 
-}
+}//end of Survey

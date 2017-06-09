@@ -4,27 +4,21 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import AppDB.Edge;
 
+/*
+ * Node.java
+ * 레시피 네트워크의 노드 클래스이다.
+ * 
+ * */
+
 public class Node {
 	private int recipeId;
-	//private double probability;
 	private ArrayList<Edge> EdgeList;
 
 	public Node(int recipeId, ArrayList<Edge> data){
 		this.recipeId = recipeId;
 		EdgeList = data;
-		/*EdgeList = new ArrayList<Edge>();
-		for (Edge t : data){
-			EdgeList.add(t);
-		}
-		*/
 	}
 	
-	
-	/*
-	public double getProbability(){
-		return this.probability;
-	}
-	*/
 	public int getRecipeId(){
 		return recipeId;
 	}
@@ -37,4 +31,5 @@ public class Node {
 		}
 		return null;
 	}
-}
+
+}//end of Node

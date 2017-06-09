@@ -8,9 +8,15 @@ import java.util.ArrayList;
 
 import AppDB.GroceryDB;
 import AppDB.Ingredient;
-import AppDB.ingredientDB;
+import AppDB.IngredientDB;
 import AppServer.MessageParser;
 import AppServer.Netwok.SendString;
+
+/*
+ * IngredientSystem.java
+ * AppSystem를 상속받아 클라이언트에 식재료 관련 서비스를 제공하는 클래스이다.
+ * 
+ * */
 
 public class IngredientSystem extends AppSystem{
 
@@ -23,36 +29,16 @@ public class IngredientSystem extends AppSystem{
 	protected DataInputStream mDIS;
 	protected DataOutputStream mDOS;
 	
-	protected ingredientDB mIngrediendtDB;
+	protected IngredientDB mIngrediendtDB;
 	
-	public IngredientSystem(String[] msg, DataInputStream dis, DataOutputStream dos) throws SQLException{
-		mMsg = msg;
-		mDIS = dis;
-		mDOS = dos;
-		mIngrediendtDB = GroceryDB.getIngredientDB();
-	}
-	@Override
-	public void excuteSystem() throws SQLException, IOException {
-		if(mMsg[1].compareTo(IngredientSystem.GET_USER_INGREDIENT)==0)
-			getUserIngredient();
-		else if(mMsg[1].compareTo(IngredientSystem.GET_ALL_INGREDIENT)==0)
-			getAllIngredient();
-		else if(mMsg[1].compareTo(IngredientSystem.ADD_USER_INGREDIENT)==0)
-			addUserIngredient();
-		else if(mMsg[1].compareTo(IngredientSystem.DELETE_USER_INGREDIENT)==0)
-			deleteUserIngredient();
-		else 
-			;
-	}
-	//------------------------------protected_method-----------------------------------------
-	/*-------------------------------------------------------------------
-	 * getUserIngredient - MSG FORMAT
+	/* void getUserIngredient() 
+	 * MSG FORMAT
 	 * "Ingredient"///"GetMy"///ID(String)
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * "Start///foodid(string)///foodname(string)///End"
 	 * 
-	 ------------------------------------------------------------------*/
+	 * */
 	protected void getUserIngredient() throws SQLException, IOException{
 		ArrayList<Ingredient> userIngredient = mIngrediendtDB.getUserIngredientList(mMsg[2]);
 		ArrayList<String> result = new ArrayList<String>();
@@ -71,14 +57,15 @@ public class IngredientSystem extends AppSystem{
 		SendString.sendString(sendStr, mDOS);
 		System.out.println("유저 식재료 전달");
 	}
-	/*-------------------------------------------------------------------
-	 * getAllIngredient - MSG FORMAT
+	
+	/* void getAllIngredient()
+	 * MSG FORMAT
 	 * "Ingredient"///"GetAll"
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * "Start///foodid(string)///foodname(string)///End"
 	 * 
-	 ------------------------------------------------------------------*/
+	 * */
 	protected void getAllIngredient() throws SQLException, IOException{
 		ArrayList<String> userIngredient = mIngrediendtDB.getAllIngredientIDList();
 		ArrayList<String> result = new ArrayList<String>();
@@ -94,17 +81,18 @@ public class IngredientSystem extends AppSystem{
 		SendString.sendString(sendStr, mDOS);		
 		System.out.println("모든 식재료 전달");
 	}
-	/*-------------------------------------------------------------------
-	 * addUserIngredient - MSG FORMAT
+	
+	/* void addUserIngredient()
+	 * MSG FORMAT
 	 * "Ingredient"///"Add"///userId///ingredientId///ingredientName
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * Success:
 	 * "Success"
 	 * Fail:
 	 * NoId - "Fail"///"UnExistID"
 	 * 
-	 ------------------------------------------------------------------*/
+	 * */
 	protected void addUserIngredient() throws SQLException, IOException{
 		java.util.Date today = new java.util.Date();
 		java.sql.Date date = new java.sql.Date(today.getTime());
@@ -131,17 +119,18 @@ public class IngredientSystem extends AppSystem{
 		SendString.sendString(sendStr, mDOS);		
 		System.out.println("식재료 추가");
 	}
-	/*-------------------------------------------------------------------
-	 * deleteUserIngredient - MSG FORMAT
+	
+	/* void deleteUserIngredient()
+	 * MSG FORMAT
 	 * "Ingredient"///"Delete"///userId///ingredientName
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * Success:
 	 * "Success"
 	 * Fail:
 	 * NoId - "Fail"
 	 * 
-	 ------------------------------------------------------------------*/
+	 * */
 	protected void deleteUserIngredient() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		try{
@@ -157,4 +146,27 @@ public class IngredientSystem extends AppSystem{
 		SendString.sendString(sendStr, mDOS);		
 		System.out.println("식재료 삭제");
 	}
-}
+
+	public IngredientSystem(String[] msg, DataInputStream dis, DataOutputStream dos) throws SQLException{
+		mMsg = msg;
+		mDIS = dis;
+		mDOS = dos;
+		mIngrediendtDB = GroceryDB.getIngredientDB();
+	}
+	
+	@Override
+	public void excuteSystem() throws SQLException, IOException {
+		if(mMsg[1].compareTo(IngredientSystem.GET_USER_INGREDIENT)==0)
+			getUserIngredient();
+		else if(mMsg[1].compareTo(IngredientSystem.GET_ALL_INGREDIENT)==0)
+			getAllIngredient();
+		else if(mMsg[1].compareTo(IngredientSystem.ADD_USER_INGREDIENT)==0)
+			addUserIngredient();
+		else if(mMsg[1].compareTo(IngredientSystem.DELETE_USER_INGREDIENT)==0)
+			deleteUserIngredient();
+		else 
+			;
+	}
+
+
+}//end of IngredientSystem

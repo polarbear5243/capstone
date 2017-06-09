@@ -2,6 +2,12 @@ package AppDB;
 
 import java.sql.Date;
 
+/*
+ * ingredient.java
+ * 데이터 베이스에서 식재료 데이터 I/O 시 서버 내에서 담아두는 식재료 클래스이다.
+ * 
+ * */
+
 public class Ingredient {
 	private String ingredientID;
 	private String amount;
@@ -87,4 +93,4 @@ public class Ingredient {
 	}
 
 	
-}
+}//end of Ingredient

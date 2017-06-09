@@ -3,7 +3,13 @@ package AppDB;
 import java.util.ArrayList;
 import java.sql.SQLException;
 
+/*
+ * Graph.java
+ * 추천 레시피를 위한 그래프로 레시피 노드와 상관관계를 나타내는 엣지로 구성된다.
+ * 서버 초기화 시 초기 그래프가 구성되고 내부 함수를 통해 추천 리스트를 제공한다.
+ * */
 
+// 레시피 네트워크 구성에 필요한 임시 자료구조 : data, flavordata
 class data {
 	int recipeid;
 	ArrayList<String> categorys;
@@ -39,13 +45,13 @@ class flavordata {
 	public int[] getFlavors(){return flavor;}
 }
 
-public class Graph {
-	RecipeDB RecipeContents;
-	ingredientDB IngredientContents;
-	
+public class Graph {	
 	private static ArrayList<Node> nodeList = null;
 	
-	public Graph(RecipeDB recipe_DB,ingredientDB ingredient_DB) throws SQLException{
+	RecipeDB RecipeContents;
+	IngredientDB IngredientContents;
+	
+	public Graph(RecipeDB recipe_DB,IngredientDB ingredient_DB) throws SQLException{
 		RecipeContents = recipe_DB;
 		IngredientContents = ingredient_DB;
 		nodeList = new ArrayList<Node>();
@@ -58,13 +64,12 @@ public class Graph {
 		recipe_DB.mResult.last();
 		int rowNum = recipe_DB.mResult.getRow();
 		
-		//////////////////////// 레시피 자료구조 하나 만들고 거기에 식재료 넣는 형식....
+		//레시피 자료구조 하나 만들고 거기에 식재료 넣는 형식.
 		ingredient_DB.mResult = ingredient_DB.mStatement.executeQuery(
 				"SELECT recipeingredient.idrecipe, recipeingredient.idingredient, ingredient.categorycode "
 				+ "FROM recipeingredient, ingredient "
 				+ "WHERE recipeingredient.idingredient = ingredient.ingredientid  "
 				+ "AND (ingredient.categorycode = 'A1' OR ingredient.categorycode = 'B1' OR ingredient.categorycode = 'B2') ORDER BY recipeingredient.idrecipe;"); 
-		//////////////////////////
 		
 		ingredient_DB.mResult.next();
 		int recipeid = ingredient_DB.mResult.getInt(1);
@@ -95,13 +100,7 @@ public class Graph {
 		for (int j = 1 ; j <= rowNum ; j++){
 			recipe_DB.mResult.absolute(j);
 			// 노드 본인의 특성을 받아옴.
-			/*
-			ingredient_DB.mResult = ingredient_DB.mStatement.executeQuery(
-					"SELECT recipeingredient.idingredient, ingredient.categorycode"
-					+ " FROM recipeingredient, ingredient"
-					+ " WHERE recipeingredient.idrecipe = "+ recipe_DB.mResult.getInt(1) 
-					+ " AND (ingredient.categorycode = 'A1' OR ingredient.categorycode = 'B1' OR ingredient.categorycode = 'B2');"); 
-			*/
+			
 			int myRecipeId = recipe_DB.mResult.getInt(1);
 			String myCountryName = recipe_DB.mResult.getString(2);
 			String myCategoryName = recipe_DB.mResult.getString(3);
@@ -113,7 +112,6 @@ public class Graph {
 			int myGrosy = recipe_DB.mResult.getInt(9);
 			int myProtein = recipe_DB.mResult.getInt(10);
 			
-			//System.out.println("현재 작업 중인 레시피 노드: "+ myRecipeId);
 			
 			data mydata = null;
 			for (int p = 0 ; p < recipeList.size() ; p++){
@@ -122,27 +120,11 @@ public class Graph {
 					break;
 				}
 			}
-			/*
-			ArrayList<String> myIngredients = new ArrayList<String>();
-			while(ingredient_DB.mResult.next()){
-				myIngredients.add(ingredient_DB.mResult.getString(1));
-			}
-			ArrayList<String> myCategorys = new ArrayList<String>();
-			ingredient_DB.mResult.beforeFirst();
-			while(ingredient_DB.mResult.next()){
-				myCategorys.add(ingredient_DB.mResult.getString(2));
-			}
-			*/
+			
 			ArrayList<Edge> myEdges = new ArrayList<Edge>();
 			for (int k = 1 ; k < j ; k++ ){
 				recipe_DB.mResult.absolute(k);
-				/*
-				ingredient_DB.mResult = ingredient_DB.mStatement.executeQuery(
-						"SELECT recipeingredient.idingredient, ingredient.categorycode"
-						+ " FROM recipeingredient, ingredient"
-						+ " WHERE recipeingredient.idrecipe = "+ recipe_DB.mResult.getInt(1) 
-						+ " AND (ingredient.categorycode = 'A1' OR ingredient.categorycode = 'B1' OR ingredient.categorycode = 'B2');"); 
-				*/
+				
 				int yourRecipeId = recipe_DB.mResult.getInt(1);
 				String yourCountryName = recipe_DB.mResult.getString(2);
 				String yourCategoryName = recipe_DB.mResult.getString(3);
@@ -161,18 +143,7 @@ public class Graph {
 						break;
 					}
 				}
-				/*
-				ArrayList<String> yourIngredients = new ArrayList<String>();;
-				while(ingredient_DB.mResult.next()){
-					yourIngredients.add(ingredient_DB.mResult.getString(1));
-				}
-				ArrayList<String> yourCategorys = new ArrayList<String>();;
-				ingredient_DB.mResult.beforeFirst();
-				while(ingredient_DB.mResult.next()){
-					yourCategorys.add(ingredient_DB.mResult.getString(2));
-				}
-				*/
-				//System.out.println("엣지 생성 작업 정상 완료 :" + k + "/" + rowNum);
+				
 				Edge edge = new Edge(myRecipeId,yourRecipeId); //엣지 생성
 				
 				///////////////////////////////// 코스트 계산 /////////////////////////////////////
@@ -209,18 +180,18 @@ public class Graph {
 				
 				// 카테고리 계산
 				if (myCategoryName.equals(yourCategoryName)){
-					edge.setValue(2, 80);
+					edge.setValue(2, 100);
 				}
 				else {
-					edge.setValue(2, 20);
+					edge.setValue(2, 40);
 				}
 				
 				// 나라 계산
 				if (myCountryName.equals(yourCountryName)){
-					edge.setValue(3, 80);
+					edge.setValue(3, 100);
 				}
 				else {
-					edge.setValue(3, 20);
+					edge.setValue(3, 40);
 				}
 				
 				myEdges.add(edge);	//계산된 값을 엣지 리스트에 추가
@@ -228,13 +199,7 @@ public class Graph {
 			
 			for (int k = j+1 ; k <= rowNum ; k++ ){
 				recipe_DB.mResult.absolute(k);
-				/*
-				ingredient_DB.mResult = ingredient_DB.mStatement.executeQuery(
-						"SELECT recipeingredient.idingredient, ingredient.categorycode"
-						+ " FROM recipeingredient, ingredient"
-						+ " WHERE recipeingredient.idrecipe = "+ recipe_DB.mResult.getInt(1) 
-						+ " AND (ingredient.categorycode = 'A1' OR ingredient.categorycode = 'B1' OR ingredient.categorycode = 'B2');"); 
-				*/
+				
 				int yourRecipeId = recipe_DB.mResult.getInt(1);
 				String yourCountryName = recipe_DB.mResult.getString(2);
 				String yourCategoryName = recipe_DB.mResult.getString(3);
@@ -254,19 +219,8 @@ public class Graph {
 						break;
 					}
 				}
-				/*
-				ArrayList<String> yourIngredients = new ArrayList<String>();;
-				while(ingredient_DB.mResult.next()){
-					yourIngredients.add(ingredient_DB.mResult.getString(1));
-				}
-				ArrayList<String> yourCategorys = new ArrayList<String>();;
-				ingredient_DB.mResult.beforeFirst();
-				while(ingredient_DB.mResult.next()){
-					yourCategorys.add(ingredient_DB.mResult.getString(2));
-				}
-				*/
+				
 				Edge edge = new Edge(myRecipeId,yourRecipeId); //엣지 생성	
-				//System.out.println("엣지 생성 작업 정상 완료 :" + k + "/" + rowNum);
 				
 				
 				///////////////////////////////// 코스트 계산 /////////////////////////////////////
@@ -326,8 +280,6 @@ public class Graph {
 		} 
 		
 		
-		
-		
 	} 
 
 	static public ArrayList<Node> getNodeList(){return nodeList;}
@@ -338,14 +290,15 @@ public class Graph {
 		
 		 double[] mypriority = new double[4];
 		 for (int i = 0 ; i < 4 ; i++){
+			 
 			 if (priority[i] == 1){
-				 mypriority[i] = 2.0;
+				 mypriority[i] = 2.5;
 			 }
 			 else if (priority[i] == 2){
-				 mypriority[i] = 1.67;
+				 mypriority[i] = 2.0;
 			 }
 			 else if (priority[i] == 3){
-				 mypriority[i] = 1.33;
+				 mypriority[i] = 1.5;
 			 }
 			 else {
 				 mypriority[i] = 1.0;
@@ -373,7 +326,7 @@ public class Graph {
 		double [][] myFlavor = new double[7][5];
 		for (int i = 0 ; i < 34 ; i++){
 			try{
-				myFlavor[i/5][i%5] = (double)IngredientContents.mResult.getInt(6+i)/(double)IngredientContents.mResult.getInt(6+i+1);
+				myFlavor[i/5][i%5] = (double)IngredientContents.mResult.getInt(6+i*2)/(double)IngredientContents.mResult.getInt(6+i*2+1);
 				
 			}
 			catch(ArithmeticException e){
@@ -459,13 +412,16 @@ public class Graph {
 						}
 						ArrayList<Integer> targetIngredients = flavorDataList.get(flavorIdx).ingredients;
 						
-						//식재료 포함 여부 확인하여 점수 +50
+						//tag:식재료점수
+						//식재료 포함 여부 확인하여 점수 +100
 						boolean escape = false;
 						for(int z = 0 ; z < myIngredients.size() ; z++){
 							for (int x = 0 ; x < targetIngredients.size(); x++){
-								if(myIngredients.get(z) == targetIngredients.get(x)){
+								int a = myIngredients.get(z);
+								int b = targetIngredients.get(x);
+								if(a == b){
 									//내가 좋아하는 재료가 targetRecipe 에 하나라도 존재함
-									score += 50;
+									score += 100;
 									escape = true;
 									break;
 								}
@@ -473,31 +429,45 @@ public class Graph {
 							if (escape == true) break;
 						}
 						
+						if (flavorDataList.get(flavorIdx).getRecipeId() == 278){
+							int debug = 1;
+							debug = 0;
+						}
+						
 						//맛 취향 일치 여부 확인하여 점수 추가
-						int count = 0;
+						int likeCount = 0;
+						int dislikeCount = 0;
 						boolean[] targetMainFlavor = flavorDataList.get(flavorIdx).getMainFlavor();
 						for (int z = 0 ; z < targetMainFlavor.length ; z++){
 							if (targetMainFlavor[z]){
 								int judgeValue = flavorDataList.get(flavorIdx).flavor[z];
-								if(judgeValue < 20 && myFlavor[z][0] > 0.6){
-									count++;
+								if(judgeValue < 20 ){
+									if(myFlavor[z][0] > 0.6)likeCount++;
+									if (myFlavor[z][0] < 0.4)dislikeCount++;
 								}
-								else if (judgeValue < 40 && myFlavor[z][1] > 0.6){
-									count++;
+								else if (judgeValue < 40 ){
+									if(myFlavor[z][1] > 0.6)likeCount++;
+									if (myFlavor[z][1] < 0.4)dislikeCount++;
 								}
-								else if (judgeValue < 60 && myFlavor[z][2] > 0.6){
-									count++;
+								else if (judgeValue < 60 ){
+									if(myFlavor[z][2] > 0.6)likeCount++;
+									if (myFlavor[z][2] < 0.4)dislikeCount++;
 								}
-								else if (judgeValue < 80 && myFlavor[z][3] > 0.6){
-									count++;
+								else if (judgeValue < 80 ){
+									if(myFlavor[z][3] > 0.6)likeCount++;
+									if (myFlavor[z][3] < 0.4)dislikeCount++;
 								}
 								else if (myFlavor[z][4] > 0.6){
-									count++;
+									likeCount++;
+								}
+								else if (myFlavor[z][4] < 0.4){
+									dislikeCount++;
 								}
 							}
 						}
 
-						score += (50/targetMainFlavor.length)*count;
+						score += (100/targetMainFlavor.length)*likeCount;
+						score -= (100/targetMainFlavor.length)*dislikeCount;
 						escape = false;
 						//확정된 스코어를 결과 배열의 MAX 값 확인 및 업데이트
 						for (int z = 0 ; z < this.nodeList.size(); z++){
@@ -555,5 +525,5 @@ public class Graph {
     }
 
 
-}
+}//end of Graph
 

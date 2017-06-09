@@ -7,17 +7,28 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-public class ingredientDB {
+/*
+ * IngredientDB.java
+ * MySQL 데이터베이스에 연결된 상태에서 식재료 관련 정보를 가져오거나 업데이트 할 수
+ * 있도록 함수를 제공해주는 DB 클래스이다.
+ * */
+
+public class IngredientDB {
 	protected Connection mConnection = null;
 	protected Statement mStatement = null;
 	protected PreparedStatement manipulate = null;
 	protected ResultSet mResult = null;
 	
-	public ingredientDB(Connection connection) throws SQLException{
+	public IngredientDB(Connection connection) throws SQLException{
 		mStatement = connection.createStatement();
 		mConnection = connection;
 	}
 	
+	/* ArrayList<String> getAllIngredientIDList()
+	 * 현재 디비에 저장되어 있는 식재료 리스트를 리턴합니다.
+	 * 홀수번째에는 id 가 짝수번째에는 식재료 이름이 들어갑니다.
+	 * 
+	 * */
 	public ArrayList<String> getAllIngredientIDList() throws SQLException{
 		ArrayList<String> result = new ArrayList<String>();
 		mResult = mStatement.executeQuery("SELECT ingredientid, bornname From ingredient;");
@@ -28,13 +39,11 @@ public class ingredientDB {
 		
 		return result;
 	}
-	
-	public byte[] getImageByIngredientId(String id) throws SQLException{
-		mResult = mStatement.executeQuery("SELECT ingredientimage FROM ingredientimage WHERE ingredientid = " + id + ";");
-		mResult.next();
-		return mResult.getBytes("ingredientimage");
-	}
-	
+
+	/* ArrayList<Ingredient> getUserIngredientList(String userid)
+	 * 해당 유저아이디를 인풋으로 받아 해당 유저의 릭재료 리스트를 리턴합니다.
+	 * 
+	 * */
 	public ArrayList<Ingredient> getUserIngredientList(String userid) throws SQLException{
 		ArrayList<Ingredient> result = new ArrayList<Ingredient>();
 		mResult = mStatement.executeQuery("SELECT * FROM myingredient WHERE userid = '" + userid + "';");
@@ -51,6 +60,10 @@ public class ingredientDB {
 		return result;
 	}
 	
+	/* void insertUserIngredient(String userid, Ingredient data)
+	 * 해당 유저의 식재료 리스트에 인풋으로 받은 식재료를 추가합니다.
+	 * 
+	 * */
 	public void insertUserIngredient(String userid, Ingredient data) throws SQLException{
 		manipulate = mConnection.prepareStatement(
 				"INSERT INTO myingredient(userid,ingredientid,amount,buydate,productname,favorite) "
@@ -141,7 +154,10 @@ public class ingredientDB {
 		}
 	} 
 	
-	
+	/* void deleteUserIngredient(String userid, String productName)
+	 * 유저ID와 제품 이름으로 검색하여 햐여 해당 유저의 식재료를 삭제합니다.
+	 * 
+	 * */
 	public void deleteUserIngredient(String userid, String productName) throws SQLException{
 		mStatement.executeUpdate("DELETE FROM myingredient WHERE userid = '" + userid + "' AND productname = '"+ productName +"';");
 		
@@ -160,11 +176,18 @@ public class ingredientDB {
 		
 	}	
 	
+	/* void deleteAllUserIngredient(String userid)
+	 * 해당 유저의 id를 인풋으로 받아 유저의 모든 식재료를 삭제합니다.
+	 * 
+	 * */
 	public void deleteAllUserIngredient(String userid) throws SQLException{
 		mStatement.executeUpdate("DELETE FROM myingredient WHERE userid = '" + userid + "';");		
 	}
 	
-	
+	/* void changeUserIngredientInfo (String userid, String productName, Ingredient data)
+	 * 유저id와 제품이름, 넣을 제품의 데이터를 받아 해당 유저의 제품을 변경합니다.
+	 * 
+	 * */
 	public void changeUserIngredientInfo(String userid, String productName, Ingredient data) throws SQLException{
 		mStatement.executeUpdate("UPDATE myingredient "
 				+ "SET amount = '"+ data.getAmount() 
@@ -174,6 +197,10 @@ public class ingredientDB {
 				+ "' WHERE userid = '" + userid + "' AND productname = '" + productName + "';");
 	}
 	
+	/* ArrayList<String> searchByIngredientName(String productName)
+	 * 제품 이름을 인풋으로 받아 해당 이름의 식재료들의 리스트를 리턴합니다.
+	 * 
+	 * */
 	public ArrayList<String> searchByIngredientName(String productName) throws SQLException{
 		ArrayList<String> result = new ArrayList<String>();
 		String target = productName.toUpperCase();
@@ -223,4 +250,4 @@ public class ingredientDB {
 		return result;
 	}
 	
-}
+}//end of IngredientDB.java

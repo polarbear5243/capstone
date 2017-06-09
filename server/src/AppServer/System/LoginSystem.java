@@ -11,6 +11,12 @@ import AppDB.LoginDB;
 import AppServer.MessageParser;
 import AppServer.Netwok.SendString;
 
+/*
+ * LoginSystem.java
+ * AppSystem를 상속받아 클라이언트에 로그인 관련 서비스를 제공하는 클래스이다.
+ * 
+ * */
+
 public class LoginSystem extends AppSystem{
 
 	protected static final String MANUAL_LOGIN = "Manual";
@@ -23,17 +29,16 @@ public class LoginSystem extends AppSystem{
 	
 	protected LoginDB mLoginDB;
 	
-	//------------------------------protected_method-----------------------------------------
-	/*-------------------------------------------------------------------
-	 * Manual - MSG FORMAT
+	/* void manualLogin()
+	 * MSG FORMAT
 	 * "Login"///"Manual"///ID(String)///PW(String)///DeviceID(String)
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * Success :			"Success"
 	 * Fail-UnExistID :		"Fail"///"UnExistID"
 	 * Fail-WrongPW :		"Fail"///"WrongPW"
 	 * 
-	 ------------------------------------------------------------------*/
+	 * */
 	protected void manualLogin() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
@@ -42,7 +47,6 @@ public class LoginSystem extends AppSystem{
 			try{
 				mLoginDB.registerDevice(mMsg[2], mMsg[4]);
 			} catch(SQLException e){
-				// 이거 처리해야함.
 				e.printStackTrace();
 			}
 			System.out.println("로그인 성공");
@@ -51,7 +55,7 @@ public class LoginSystem extends AppSystem{
 		else{
 			result.add("Fail");
 			if(mLoginDB.isExistUserID(mMsg[2]) == true){
-				// 아이디가 있으면 비번이 틀린거
+				// 아이디가 있으면 비번이 틀린 것.
 				result.add("WrongPW");				
 			}
 			else {
@@ -65,16 +69,17 @@ public class LoginSystem extends AppSystem{
 		sendStr = MessageParser.wrapMsg(result);
 		SendString.sendString(sendStr, mDOS);
 	}
-	/*-------------------------------------------------------------------
-	 * Auto - MSG FORMAT
+	
+	/* void autoLogin()
+	 * MSG FORMAT
 	 * "Login"///"Auto"///ID(String)///PW(String)///DeviceID(String)
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * Success :				"Success"
 	 * Fail-WrongInfo :			"Fail"///"WrongInfo"
 	 * Fail-WrongDevice :		"Fail"///"WrongDevice"
 	 * 
-	 ------------------------------------------------------------------*/	
+	 */	
 	protected void autoLogin() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
@@ -96,21 +101,22 @@ public class LoginSystem extends AppSystem{
 		sendStr = MessageParser.wrapMsg(result);
 		SendString.sendString(sendStr, mDOS);
 	}
-	/*-------------------------------------------------------------------
-	 * Register - MSG FORMAT
+	
+	/* void register()
+	 * MSG FORMAT
 	 * "Login"///"Register"///ID(String)///PW(String)
 	 * 
-	 * Result - FORMAT
+	 * Result FORMAT
 	 * Success :				"Success"
 	 * Fail-ExistID :			"Fail"///"ExistID"
 	 * 
-	 ------------------------------------------------------------------*/	
+	 * */	
 	protected void register() throws SQLException, IOException{
 		ArrayList<String> result = new ArrayList<String>();
 		String sendStr;
 		
 		if(mLoginDB.isExistUserID(mMsg[2]) == true){
-			//이미 이쓴 ID
+			//이미 있는 ID
 			result.add("Fail");
 			result.add("ExistID");			
 		}
@@ -123,7 +129,7 @@ public class LoginSystem extends AppSystem{
 		sendStr = MessageParser.wrapMsg(result);
 		SendString.sendString(sendStr, mDOS);
 	}
-	//-------------------------------public_method-------------------------------------------
+	
 	public LoginSystem(String[] msg, DataInputStream dis, DataOutputStream dos) throws SQLException{
 		mMsg = msg;
 		mDIS = dis;
@@ -142,5 +148,4 @@ public class LoginSystem extends AppSystem{
 			;
 	}
 	
-	
-}
+}//end of LoginSystem

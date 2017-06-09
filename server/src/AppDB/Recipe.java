@@ -2,6 +2,12 @@ package AppDB;
 
 import java.util.ArrayList;
 
+/*
+ * Recipe.java
+ * 데이터 베이스에서 레시피 데이터 I/O 시 서버 내에서 담아두는 레시피 클래스이다.
+ * 
+ * */
+
 public class Recipe {
 	private String recipeID;
 	private String recipeName;
@@ -179,4 +185,4 @@ public class Recipe {
 		}
 	}
 	
-}
+}//end of Recipe

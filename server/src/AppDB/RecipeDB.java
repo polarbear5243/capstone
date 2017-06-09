@@ -7,7 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 
-
+/*
+ * RecipeDB.java
+ * MySQL 데이터베이스에 연결된 상태에서 레시피 관련 정보를 가져오거나 업데이트 할 수
+ * 있도록 함수를 제공해주는 DB 클래스이다.
+ * */
 
 public class RecipeDB {
 	protected Connection mConnection = null;
@@ -55,17 +59,6 @@ public class RecipeDB {
 		}
 		
 		return result;
-	}
-	
-	/* byte[] getImageByRecipeId(String id)
-	 * 만약에 DB에서 이미지를 바로 꺼내온다 하면 필요한 함수(미구현)
-	 * 
-	 * */
-	public byte[] getImageByRecipeId(String id) throws SQLException{
-		//mResult = mStatement.executeQuery("SELECT ingredientimage FROM ingredientimage WHERE ingredientid = " + id + ";");
-		//mResult.next();
-		//return mResult.getBytes("ingredientimage");
-		return new byte[2];
 	}
 	
 	/* ArrayList<String> getRecipeInfo(recipeKeyword keyword, String value)
@@ -310,6 +303,10 @@ public class RecipeDB {
 		}
 		return mainFlavor;
 	}	
+	
+	/* int[] getRecentRecipeId(String userid, int num)
+	 * 유저가 최근 좋다고 평가한 레시피 num 개를 가지고와 레시피 id 배열로 리턴한다.
+	 * */
 	public int[] getRecentRecipeId(String userid, int num) throws SQLException{
 		int i;
 
@@ -327,25 +324,34 @@ public class RecipeDB {
 			int [] tmp = new int[i];
 			
 			for(int j=0;j<i;j++)
-				tmp[j]=result[i];
+				tmp[j]=result[j];
 			return tmp;
 		}
 		
 		return result;
 	}
 	
+	/* int getMaxOfRecipeid()
+	 * 레시피 id MAX 를 가져온다.
+	 */
 	public int getMaxOfRecipeid() throws SQLException{
 		mResult = mStatement.executeQuery("SELECT max(idrecipe) FROM recipe;");
 		mResult.next();
 		return mResult.getInt(1);
 	}
 	
+	/* int getMinOfRecipeid()
+	 * 레시피 id MAX 를 가져온다.
+	 */
 	public int getMinOfRecipeid() throws SQLException{
 		mResult = mStatement.executeQuery("SELECT min(idrecipe) FROM recipe;");
 		mResult.next();
 		return mResult.getInt(1);
 	}
 	
+	/* boolean isCorrectId(int id)
+	 * 레시피 id 가 디비에 존재하는 지 확인하고 있으면 true 없으면 false 를 리턴한다.
+	 * */
 	public boolean isCorrectId(int id) throws SQLException{
 		mResult = mStatement.executeQuery("SELECT * FROM recipe where idrecipe = " + id + ";");
 		
@@ -354,4 +360,5 @@ public class RecipeDB {
 		else
 			return false;
 	}
-}
+
+}//end of RecipeDB
